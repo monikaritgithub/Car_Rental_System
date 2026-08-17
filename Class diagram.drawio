@@ -1,0 +1,88 @@
+<mxfile host="Electron">
+  <diagram name="Page-1" id="ZHoyVvFkdtQl9G30Hy9D">
+    <mxGraphModel dx="1681" dy="2004" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-2" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Customer&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- licenseIDNo: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- paymentInfo: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- name: String&lt;br&gt;- email : String&lt;br&gt;- password: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- phoneNo: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- address: String&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ searchCars(): List&amp;lt;Car&amp;gt;&lt;br&gt;  + viewCarDetails(carId: String): Car&lt;br&gt;  + createBooking(carId: String, dates: DateRange): Booking&lt;br&gt;  + makePayment(bookingId: String, cardDetails: String): Payment&lt;br&gt;  + cancelReservation(bookingId: String): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="210" width="350" x="170" y="-200" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-4" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Admin&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- employeeId: String&lt;br&gt;- department: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- name: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- email: String&lt;br&gt;- password: String&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ addCar(carDetails: Car): boolean&lt;br&gt;  + updateCar(carId: String, details: Car): boolean&lt;br&gt;  + deleteCar(carId: String): boolean&lt;br&gt;+ viewReservations(): List&amp;lt;Booking&amp;gt;&lt;br&gt;+ confirmBooking(bookingId: String): boolean&lt;br&gt;+ cancelBooking(bookingId: String): boolean&lt;br&gt;+ confirmPayment(paymentId: String): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="220" width="280" x="850" y="-140" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-6" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Car&amp;nbsp;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- carId: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- make: String&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- model: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- year: int&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- mileage: double&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- availableNow: boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- minRentPeriod: int&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- maxRentPeriod: int&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- dailyRate: double&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- image: String&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ updateMileage(newMileage: double): void&lt;br&gt;  + setAvailability(status: boolean): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="220" width="250" x="790" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-7" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Booking&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- bookingId: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- customerId: String&lt;br&gt;- carId: String&lt;br&gt;- startDate: Date&lt;br&gt;- endDate: Date&lt;br&gt;- totalFee: double&lt;br&gt;- bookingStatus: String&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ calculateTotalFee(dailyRate: double, days: int): double&lt;br&gt;  + validateAvailability(carId: String, dates: DateRange): boolean&lt;br&gt;  + updateStatus(newStatus: String): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="190" width="350" x="477" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-8" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Payment&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- paymentId: String&lt;br&gt;- bookingId: String&lt;br&gt;- amount: double&lt;br&gt;- paymentDate: Date&lt;br&gt;- paymentStatus: String&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ processCreditCard(cardDetails: String): boolean&lt;br&gt;+ confirmPayment(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="150" width="270" x="279" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-14" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;exitX=0.994;exitY=0.559;exitDx=0;exitDy=0;exitPerimeter=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="490" y="10" as="sourcePoint" />
+            <mxPoint x="490" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-15" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="1" vertex="1">
+          <mxGeometry height="30" width="60" x="450" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-16" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="0..*" vertex="1">
+          <mxGeometry height="30" width="60" x="480" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-17" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="800" y="420" as="sourcePoint" />
+            <mxPoint x="800" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-18" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="1" vertex="1">
+          <mxGeometry height="30" width="60" x="780" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-19" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="0..*" vertex="1">
+          <mxGeometry height="30" width="60" x="790" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-20" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;exitX=0.994;exitY=0.559;exitDx=0;exitDy=0;exitPerimeter=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="490" y="340" as="sourcePoint" />
+            <mxPoint x="490" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-23" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="1" vertex="1">
+          <mxGeometry height="30" width="60" x="470" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-24" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="1" vertex="1">
+          <mxGeometry height="30" width="60" x="470" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-25" edge="1" parent="1" source="Sn_BVaCFAFfjkcEuytEz-4" style="endArrow=classic;html=1;rounded=0;exitX=-0.004;exitY=0.58;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.666;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="Sn_BVaCFAFfjkcEuytEz-7" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="-13.1" />
+            </Array>
+            <mxPoint x="730" y="-30" as="sourcePoint" />
+            <mxPoint x="720.25" y="147.72" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-27" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="1&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="690" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-28" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="0..*" vertex="1">
+          <mxGeometry height="30" width="60" x="700" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-29" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="creates" vertex="1">
+          <mxGeometry height="20" width="60" x="489" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-30" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="verifies" vertex="1">
+          <mxGeometry height="20" width="60" x="710" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-34" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="reserved in" vertex="1">
+          <mxGeometry height="30" width="70" x="800" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="Sn_BVaCFAFfjkcEuytEz-35" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="requires" vertex="1">
+          <mxGeometry height="30" width="60" x="489" y="390" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
