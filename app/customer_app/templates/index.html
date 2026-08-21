@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Smriti Car Rental - Premium Fleet{% end block %}
+
+{% block content %}
+<div class="hero">
+    <h1>Experience the Journey</h1>
+    <p>Premium car rental service offering the best vehicles for your next adventure. Fast booking, transparent pricing, and excellent service.</p>
+    <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary" style="font-size: 1.125rem; padding: 0.75rem 2rem;">Explore Our Fleet</a>
+</div>
+
+<h2 style="text-align: center; margin-bottom: 2rem;">Available Now</h2>
+
+<div class="car-grid">
+    {% for car in cars[:6] %}
+    <div class="car-card">
+        {% if car.image %}
+            <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}" alt="{{ car.make }} {{ car.model }}" class="car-img">
+        {% else %}
+            <div class="car-img" style="background: #e5e7eb; display: flex; align-items: center; justify-content: center; color: #9ca3af;">No Image</div>
+        {% endif %}
+        <div class="car-info">
+            <span class="car-category">{{ car.category }}</span>
+            <h3 class="car-title">{{ car.year }} {{ car.make }} {{ car.model }}</h3>
+            <div class="car-price">
+                ${{ "%.2f"|format(car.daily_rate) }} <span>/ day</span>
+            </div>
+            <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="btn btn-outline" style="width: 100%;">View Details</a>
+        </div>
+    </div>
+    {% end for %}
+</div>
+
+<div style="text-align: center; margin-top: 3rem;">
+    <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-secondary">View All Vehicles</a>
+</div>
+{% end block %}

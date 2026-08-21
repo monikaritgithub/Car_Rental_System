@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings - Smriti Car Rental{% end block %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2>My Reservations</h2>
+    <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary">Book Another Car</a>
+</div>
+
+{% if not bookings %}
+<div style="text-align: center; padding: 4rem; background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow);">
+    <h3>You don't have any bookings yet.</h3>
+    <p style="color: var(--gray); margin-top: 1rem;">Explore our fleet to find the perfect vehicle for your next trip.</p>
+</div>
+{% else %}
+<div class="car-grid">
+    {% for booking in bookings %}
+    <div class="car-card" style="position: relative;">
+        <div style="position: absolute; top: 1rem; right: 1rem; z-index: 10;">
+            {% if booking.booking_status == 'PENDING' %}
+                <span class="badge badge-pending">Pending</span>
+            {% elif booking.booking_status == 'APPROVED' %}
+                <span class="badge badge-approved">Approved</span>
+            {% elif booking.booking_status == 'REJECTED' %}
+                <span class="badge badge-rejected">Rejected</span>
+            {% elif booking.booking_status == 'CANCELLED' %}
+                <span class="badge badge-cancelled">Cancelled</span>
+            {% endif %}
+        </div>
+        
+        {% if booking.car.image %}
+            <img src="{{ url_for('customer.serve_image', filename=booking.car.image.split('/')[-1]) }}" alt="{{ booking.car.make }}" class="car-img" style="height: 150px;">
+        {% else %}
+            <div class="car-img" style="height: 150px; background: #e5e7eb;"></div>
+        {% endif %}
+        
+        <div class="car-info">
+            <span class="car-category">Ref: {{ booking.booking_id }}</span>
+            <h3 class="car-title">{{ booking.car.year }} {{ booking.car.make }} {{ booking.car.model }}</h3>
+            
+            <div style="margin: 1rem 0; font-size: 0.875rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                    <span style="color: var(--gray);">From:</span>
+                    <strong>{{ booking.start_date }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--gray);">To:</span>
+                    <strong>{{ booking.end_date }}</strong>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto;">
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--gray);">Total Paid</div>
+                    <div style="font-weight: 700; color: var(--primary);">${{ "%.2f"|format(booking.total_fee) }}</div>
+                </div>
+                
+                {% if booking.booking_status == 'PENDING' %}
+                <form method="POST" action="{{ url_for('customer.cancel_booking', booking_id=booking.booking_id) }}" onsubmit="return confirm('Are you sure you want to cancel this reservation?');">
+                    <button type="submit" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: var(--danger); border-color: var(--danger);">Cancel</button>
+                </form>
+                {% endif %}
+            </div>
+            
+            {% if booking.admin_notes %}
+            <div style="margin-top: 1rem; padding: 0.5rem; background: #F3F4F6; border-radius: var(--radius); font-size: 0.75rem;">
+                <strong>Admin Note:</strong> {{ booking.admin_notes }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% end for %}
+</div>
+{% endif %}
+{% end block %}

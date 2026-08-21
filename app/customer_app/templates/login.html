@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Smriti Car Rental{% end block %}
+
+{% block content %}
+<div class="form-container">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Welcome Back</h2>
+    
+    <form method="POST" action="{{ url_for('customer.login') }}">
+        <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" id="email" name="email" class="form-control" required autofocus>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Log In</button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 2rem; color: var(--gray);">
+        Don't have an account? <a href="{{ url_for('customer.register') }}">Sign up here</a>
+    </p>
+</div>
+{% end block %}

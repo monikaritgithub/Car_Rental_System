@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Pending - Smriti Car Rental{% end block %}
+
+{% block content %}
+<div class="hero" style="max-width: 600px; margin: 0 auto; background: var(--white); box-shadow: var(--shadow);">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
+    <h1 style="font-size: 2rem;">Booking Pending Approval</h1>
+    
+    <p style="margin-top: 1rem;">Thank you, {{ session.get('customer_name') }}! Your payment has been processed and your booking is currently pending.</p>
+    
+    <div style="background: #F3F4F6; padding: 1.5rem; border-radius: var(--radius); margin: 2rem 0; text-align: left;">
+        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Reservation Summary</h3>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: var(--gray);">Booking Reference</span>
+            <strong>{{ booking.booking_id }}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: var(--gray);">Vehicle</span>
+            <strong>{{ booking.car.year }} {{ booking.car.make }} {{ booking.car.model }}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: var(--gray);">Dates</span>
+            <strong>{{ booking.start_date }} to {{ booking.end_date }}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--gray);">Amount Paid</span>
+            <strong>${{ "%.2f"|format(booking.total_fee) }}</strong>
+        </div>
+    </div>
+    
+    <p style="color: var(--gray); font-size: 0.875rem; margin-bottom: 2rem;">Our administrative team will review your booking shortly. You can check the status on your bookings page.</p>
+    
+    <a href="{{ url_for('customer.my_bookings') }}" class="btn btn-primary">View My Bookings</a>
+</div>
+{% end block %}

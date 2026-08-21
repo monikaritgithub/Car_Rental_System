@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Our Fleet - Smriti Car Rental{% end block %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2>Available Vehicles</h2>
+    
+    <div style="display: flex; gap: 0.5rem;">
+        <a href="{{ url_for('customer.browse_cars') }}" class="btn {{ 'btn-primary' if not selected_category else 'btn-outline' }}">All</a>
+        {% for cat in categories %}
+            <a href="{{ url_for('customer.browse_cars', category=cat) }}" class="btn {{ 'btn-primary' if selected_category == cat else 'btn-outline' }}">{{ cat }}</a>
+        {% end for %}
+    </div>
+</div>
+
+{% if not cars %}
+<div style="text-align: center; padding: 4rem; background: var(--white); border-radius: var(--radius-lg);">
+    <h3>No vehicles currently available</h3>
+    <p style="color: var(--gray); margin-top: 1rem;">Please check back later or try a different category.</p>
+</div>
+{% else %}
+<div class="car-grid">
+    {% for car in cars %}
+    <div class="car-card">
+        {% if car.image %}
+            <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}" alt="{{ car.make }} {{ car.model }}" class="car-img">
+        {% else %}
+            <div class="car-img" style="background: #e5e7eb; display: flex; align-items: center; justify-content: center; color: #9ca3af;">No Image</div>
+        {% endif %}
+        <div class="car-info">
+            <span class="car-category">{{ car.category }}</span>
+            <h3 class="car-title">{{ car.year }} {{ car.make }} {{ car.model }}</h3>
+            <div class="car-price">
+                ${{ "%.2f"|format(car.daily_rate) }} <span>/ day</span>
+            </div>
+            <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="btn btn-outline" style="width: 100%;">View Details</a>
+        </div>
+    </div>
+    {% end for %}
+</div>
+{% endif %}
+{% end block %}

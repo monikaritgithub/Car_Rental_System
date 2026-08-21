@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Checkout - Smriti Car Rental{% end block %}
+
+{% block content %}
+<div class="detail-container" style="grid-template-columns: 1fr 1fr;">
+    <div>
+        <h2 style="margin-bottom: 1.5rem;">Booking Summary</h2>
+        <div style="background: #F3F4F6; padding: 1.5rem; border-radius: var(--radius); margin-bottom: 2rem;">
+            <h3 style="font-size: 1.25rem;">{{ booking.car_name }}</h3>
+            <p style="color: var(--gray); margin-bottom: 1rem;">ID: {{ booking.car_display_id }}</p>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--gray);">Dates</span>
+                <strong>{{ booking.start_date }} to {{ booking.end_date }}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--gray);">Duration</span>
+                <strong>{{ booking.rental_days }} day(s)</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--gray);">Daily Rate</span>
+                <strong>${{ "%.2f"|format(booking.daily_rate) }}</strong>
+            </div>
+            
+            <hr style="border: 0; border-top: 1px solid var(--gray-light); margin: 1rem 0;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 600;">Total Fee</span>
+                <span style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">${{ "%.2f"|format(booking.total_fee) }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="form-container" style="box-shadow: none; padding: 0; max-width: 100%;">
+            <h3 style="margin-bottom: 0.5rem;">Payment Information</h3>
+            <p style="color: var(--gray); margin-bottom: 1.5rem; font-size: 0.875rem;">This is a demonstration system. Please use mock payment details.</p>
+            
+            <form method="POST" action="{{ url_for('customer.payment') }}">
+                <div class="form-group">
+                    <label class="form-label" for="card_holder">Name on Card</label>
+                    <input type="text" id="card_holder" name="card_holder" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="card_number">Card Number</label>
+                    <input type="text" id="card_number" name="card_number" class="form-control" placeholder="0000 0000 0000 0000" required>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="expiry">Expiry (MM/YY)</label>
+                        <input type="text" id="expiry" name="expiry" class="form-control" placeholder="12/28" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="cvv">CVV</label>
+                        <input type="text" id="cvv" name="cvv" class="form-control" placeholder="123" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1.125rem;">
+                    Pay ${{ "%.2f"|format(booking.total_fee) }}
+                </button>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <span style="font-size: 0.875rem; color: var(--gray);">🔒 Secure Mock Payment Gateway</span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% end block %}

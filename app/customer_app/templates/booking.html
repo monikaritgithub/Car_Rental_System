@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Book {{ car.make }} {{ car.model }} - Smriti Car Rental{% end block %}
+
+{% block content %}
+<a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" style="display: inline-block; margin-bottom: 2rem;">&larr; Back to Car Details</a>
+
+<div class="detail-container" style="grid-template-columns: 1fr 1fr;">
+    <div>
+        <h2 style="margin-bottom: 1.5rem;">Booking Details</h2>
+        <div style="background: #F3F4F6; padding: 1.5rem; border-radius: var(--radius); margin-bottom: 2rem;">
+            <h3 style="font-size: 1.25rem;">{{ car.year }} {{ car.make }} {{ car.model }}</h3>
+            <p style="color: var(--gray); margin-bottom: 1rem;">{{ car.category }}</p>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">
+                ${{ "%.2f"|format(car.daily_rate) }} <span style="font-size: 1rem; color: var(--gray); font-weight: 400;">/ day</span>
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            <strong>Rental Requirements:</strong><br>
+            Minimum: {{ car.min_rent_period }} day(s)<br>
+            Maximum: {{ car.max_rent_period }} day(s)
+        </div>
+    </div>
+
+    <div>
+        <div class="form-container" style="box-shadow: none; padding: 0; max-width: 100%;">
+            <h3 style="margin-bottom: 1.5rem;">Select Dates</h3>
+            
+            <form method="POST" action="{{ url_for('customer.book_car', car_id=car.car_id) }}">
+                <div class="form-group">
+                    <label class="form-label" for="start_date">Start Date</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control" required min="{{ today }}" value="{{ request.form.get('start_date', '') }}">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="end_date">End Date</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control" required min="{{ today }}" value="{{ request.form.get('end_date', '') }}">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1.125rem;">Calculate Fee & Continue to Payment</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% end block %}
