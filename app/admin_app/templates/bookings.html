@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Bookings - Smriti Admin{% end block %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h1 class="page-title" style="margin: 0;">Reservation Management</h1>
+    
+    <div>
+        <form method="GET" action="{{ url_for('admin.bookings') }}" style="display: flex; gap: 0.5rem;">
+            <select name="status" class="form-control" style="width: auto;">
+                <option value="">All Statuses</option>
+                <option value="PENDING" {% if status_filter == 'PENDING' %}selected{% endif %}>Pending</option>
+                <option value="APPROVED" {% if status_filter == 'APPROVED' %}selected{% endif %}>Approved</option>
+                <option value="REJECTED" {% if status_filter == 'REJECTED' %}selected{% endif %}>Rejected</option>
+                <option value="CANCELLED" {% if status_filter == 'CANCELLED' %}selected{% endif %}>Cancelled</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+            {% if status_filter %}
+                <a href="{{ url_for('admin.bookings') }}" class="btn btn-outline">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ref ID</th>
+                    <th>Date Created</th>
+                    <th>Customer</th>
+                    <th>Vehicle</th>
+                    <th>Dates</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td><strong>{{ booking.booking_id }}</strong></td>
+                    <td>{{ booking.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        <div>{{ booking.customer.name }}</div>
+                        <div style="font-size: 0.75rem; color: var(--gray);">{{ booking.customer.email }}</div>
+                    </td>
+                    <td>
+                        <div>{{ booking.car.car_id }}</div>
+                        <div style="font-size: 0.75rem; color: var(--gray);">{{ booking.car.make }} {{ booking.car.model }}</div>
+                    </td>
+                    <td>
+                        <div style="font-size: 0.875rem;">{{ booking.start_date }}</div>
+                        <div style="font-size: 0.875rem;">{{ booking.end_date }}</div>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ booking.booking_status|lower }}">{{ booking.booking_status }}</span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.booking_detail', booking_id=booking.booking_id) }}" class="btn btn-primary btn-sm">Review</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 3rem; color: var(--gray);">No bookings found matching your criteria.</td>
+                </tr>
+                {% end for %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% end block %}

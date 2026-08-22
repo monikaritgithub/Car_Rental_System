@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Smriti Admin{% end block %}
+
+{% block content %}
+<h1 class="page-title">Dashboard Overview</h1>
+
+<div class="stats-grid">
+    <div class="stat-card" style="border-left-color: var(--warning);">
+        <div class="stat-title">Pending Bookings</div>
+        <div class="stat-value">{{ pending_count }}</div>
+    </div>
+    
+    <div class="stat-card" style="border-left-color: var(--primary);">
+        <div class="stat-title">Fleet Size</div>
+        <div class="stat-value">{{ total_cars }}</div>
+    </div>
+    
+    <div class="stat-card" style="border-left-color: var(--success);">
+        <div class="stat-title">Available Cars</div>
+        <div class="stat-value">{{ available_cars }}</div>
+    </div>
+    
+    <div class="stat-card" style="border-left-color: #8B5CF6;">
+        <div class="stat-title">Total Customers</div>
+        <div class="stat-value">{{ total_customers }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 style="font-size: 1.125rem;">Recent Reservations</h2>
+        <a href="{{ url_for('admin.bookings') }}" class="btn btn-outline btn-sm">View All</a>
+    </div>
+    
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ref ID</th>
+                    <th>Customer</th>
+                    <th>Dates</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in recent_bookings %}
+                <tr>
+                    <td><strong>{{ booking.booking_id }}</strong></td>
+                    <td>{{ booking.customer.name }}</td>
+                    <td>{{ booking.start_date }} to {{ booking.end_date }}</td>
+                    <td>
+                        <span class="badge badge-{{ booking.booking_status|lower }}">{{ booking.booking_status }}</span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.booking_detail', booking_id=booking.booking_id) }}" class="btn btn-primary btn-sm">Review</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--gray);">No recent bookings found.</td>
+                </tr>
+                {% end for %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% end block %}

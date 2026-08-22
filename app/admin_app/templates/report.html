@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}System Report - Smriti Admin{% end block %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h1 class="page-title" style="margin: 0;">Business Summary Report</h1>
+    <button onclick="window.print()" class="btn btn-primary">Print Report</button>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Financial Overview</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+        <div>
+            <div style="font-size: 0.875rem; color: var(--gray); text-transform: uppercase; font-weight: 600;">Total Revenue (Completed)</div>
+            <div style="font-size: 2.5rem; font-weight: 800; color: var(--success);">${{ "%.2f"|format(data.total_revenue) }}</div>
+        </div>
+        <div>
+            <div style="font-size: 0.875rem; color: var(--gray); text-transform: uppercase; font-weight: 600;">Completed Transactions</div>
+            <div style="font-size: 2.5rem; font-weight: 800; color: var(--dark);">{{ data.total_payments }}</div>
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+    <div class="card">
+        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Fleet Utilization</h3>
+        <ul style="list-style: none; padding: 0;">
+            <li style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--gray-light);">
+                <span>Total Vehicles in Fleet</span>
+                <strong>{{ data.total_cars }}</strong>
+            </li>
+            <li style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--gray-light);">
+                <span>Available for Rent</span>
+                <strong style="color: var(--success);">{{ data.available_cars }}</strong>
+            </li>
+            <li style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
+                <span>Currently Booked / Unavailable</span>
+                <strong style="color: var(--warning);">{{ data.unavailable_cars }}</strong>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Booking Statistics</h3>
+        <ul style="list-style: none; padding: 0;">
+            <li style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--gray-light);">
+                <span>Total Bookings Created</span>
+                <strong>{{ data.total_bookings }}</strong>
+            </li>
+            <li style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--gray-light);">
+                <span>Pending Approval</span>
+                <strong style="color: var(--warning);">{{ data.pending_bookings }}</strong>
+            </li>
+            <li style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--gray-light);">
+                <span>Approved (Active)</span>
+                <strong style="color: var(--success);">{{ data.approved_bookings }}</strong>
+            </li>
+            <li style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
+                <span>Rejected / Cancelled</span>
+                <strong style="color: var(--danger);">{{ data.rejected_bookings + data.cancelled_bookings }}</strong>
+            </li>
+        </ul>
+    </div>
+</div>
+{% end block %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Add New Car' if action == 'add' else 'Edit Car ' ~ car.car_id }} - Smriti Admin{% end block %}
+
+{% block content %}
+<a href="{{ url_for('admin.cars') }}" style="display: inline-block; margin-bottom: 1.5rem; font-size: 0.875rem;">&larr; Back to Fleet</a>
+
+<h1 class="page-title">{{ 'Add New Vehicle to Fleet' if action == 'add' else 'Edit Vehicle Details' }}</h1>
+
+<div class="card" style="max-width: 800px;">
+    <form method="POST" action="{{ url_for('admin.add_car') if action == 'add' else url_for('admin.edit_car', car_id=car.car_id) }}">
+        
+        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Basic Information</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
+            <div class="form-group">
+                <label class="form-label" for="make">Make</label>
+                <input type="text" id="make" name="make" class="form-control" required value="{{ car.make if car else '' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="model">Model</label>
+                <input type="text" id="model" name="model" class="form-control" required value="{{ car.model if car else '' }}">
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group">
+                <label class="form-label" for="year">Year</label>
+                <input type="number" id="year" name="year" class="form-control" required value="{{ car.year if car else '' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="category">Category</label>
+                <input type="text" id="category" name="category" class="form-control" placeholder="SUV, Sedan, etc." value="{{ car.category if car else '' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="mileage">Mileage</label>
+                <input type="number" step="0.1" id="mileage" name="mileage" class="form-control" required value="{{ car.mileage if car else '0' }}">
+            </div>
+        </div>
+        
+        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Rental Rules & Pricing</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group">
+                <label class="form-label" for="daily_rate">Daily Rate ($)</label>
+                <input type="number" step="0.01" id="daily_rate" name="daily_rate" class="form-control" required value="{{ car.daily_rate if car else '' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="min_rent_period">Min Days</label>
+                <input type="number" id="min_rent_period" name="min_rent_period" class="form-control" required value="{{ car.min_rent_period if car else '1' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="max_rent_period">Max Days</label>
+                <input type="number" id="max_rent_period" name="max_rent_period" class="form-control" required value="{{ car.max_rent_period if car else '30' }}">
+            </div>
+        </div>
+        
+        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Media & Description</h3>
+        
+        <div class="form-group">
+            <label class="form-label" for="image">Image Path</label>
+            <input type="text" id="image" name="image" class="form-control" placeholder="e.g. images/toyota.jpg" value="{{ car.image if car else '' }}">
+            <small style="color: var(--gray);">Relative path from the project root.</small>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label" for="description">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="4">{{ car.description if car else '' }}</textarea>
+        </div>
+        
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem;">{{ 'Save New Car' if action == 'add' else 'Update Car Details' }}</button>
+            <a href="{{ url_for('admin.cars') }}" class="btn btn-outline" style="padding: 0.75rem 2rem;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% end block %}

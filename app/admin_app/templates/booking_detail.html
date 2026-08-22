@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Booking {{ booking.booking_id }} - Smriti Admin{% end block %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div>
+        <a href="{{ url_for('admin.bookings') }}" style="display: inline-block; margin-bottom: 0.5rem; font-size: 0.875rem;">&larr; Back to Bookings</a>
+        <h1 class="page-title" style="margin: 0;">Booking Details</h1>
+    </div>
+    
+    <span class="badge badge-{{ booking.booking_status|lower }}" style="font-size: 1rem; padding: 0.5rem 1rem;">
+        {{ booking.booking_status }}
+    </span>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+    <!-- Left Column: Details -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Customer Info -->
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Customer Information</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <div style="font-size: 0.875rem; color: var(--gray);">Name</div>
+                    <div style="font-weight: 500;">{{ booking.customer.name }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.875rem; color: var(--gray);">Email</div>
+                    <div style="font-weight: 500;">{{ booking.customer.email }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.875rem; color: var(--gray);">Phone</div>
+                    <div style="font-weight: 500;">{{ booking.customer.phone_no }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.875rem; color: var(--gray);">License ID</div>
+                    <div style="font-weight: 500;">{{ booking.customer.license_id_no }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vehicle Info -->
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Vehicle Information</h3>
+            <div style="display: flex; gap: 1.5rem; align-items: center;">
+                {% if booking.car.image %}
+                    <img src="{{ url_for('admin.serve_image', filename=booking.car.image.split('/')[-1]) }}" alt="Car" style="width: 150px; height: 100px; object-fit: cover; border-radius: var(--radius);">
+                {% else %}
+                    <div style="width: 150px; height: 100px; background: #E5E7EB; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: #9CA3AF;">No Image</div>
+                {% endif %}
+                
+                <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <div style="font-size: 0.875rem; color: var(--gray);">Vehicle</div>
+                        <div style="font-weight: 600;">{{ booking.car.year }} {{ booking.car.make }} {{ booking.car.model }}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.875rem; color: var(--gray);">Car ID</div>
+                        <div style="font-weight: 500;">{{ booking.car.car_id }}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.875rem; color: var(--gray);">Current Status</div>
+                        <div style="font-weight: 500;">
+                            <span class="badge badge-{{ booking.car.available_now|lower }}">{{ "Available" if booking.car.available_now else "Unavailable" }}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.875rem; color: var(--gray);">Daily Rate</div>
+                        <div style="font-weight: 500;">${{ "%.2f"|format(booking.car.daily_rate) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Payment Info -->
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Payment Record</h3>
+            {% if booking.payment %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <div style="font-size: 0.875rem; color: var(--gray);">Payment ID</div>
+                    <div style="font-weight: 500;">{{ booking.payment.payment_id }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.875rem; color: var(--gray);">Amount Paid</div>
+                    <div style="font-weight: 700; color: var(--primary);">${{ "%.2f"|format(booking.payment.amount) }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.875rem; color: var(--gray);">Gateway Status</div>
+                    <div style="font-weight: 500;">
+                        <span class="badge badge-{{ booking.payment.payment_status|lower }}">{{ booking.payment.payment_status }}</span>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size: 0.875rem; color: var(--gray);">Admin Confirmed</div>
+                    <div style="font-weight: 500;">
+                        <span class="badge badge-{{ booking.payment.confirmed_by_admin|lower }}">{{ "Yes" if booking.payment.confirmed_by_admin else "No" }}</span>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p style="color: var(--gray);">No payment record found for this booking.</p>
+            {% endif %}
+        </div>
+        
+    </div>
+    
+    <!-- Right Column: Action Panel -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Reservation Dates</h3>
+            
+            <div style="margin-bottom: 1rem;">
+                <div style="font-size: 0.875rem; color: var(--gray);">Start Date</div>
+                <div style="font-weight: 600; font-size: 1.125rem;">{{ booking.start_date }}</div>
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <div style="font-size: 0.875rem; color: var(--gray);">End Date</div>
+                <div style="font-weight: 600; font-size: 1.125rem;">{{ booking.end_date }}</div>
+            </div>
+            
+            <div style="padding: 1rem; background: #F3F4F6; border-radius: var(--radius); text-align: center;">
+                <div style="font-size: 0.875rem; color: var(--gray);">Duration</div>
+                <div style="font-weight: 700; font-size: 1.5rem;">{{ booking.rental_days }} Days</div>
+            </div>
+        </div>
+        
+        {% if booking.booking_status == 'PENDING' %}
+        <div class="card" style="margin-bottom: 0; border: 2px solid var(--primary);">
+            <h3 style="margin-bottom: 1rem;">Admin Actions</h3>
+            
+            <form method="POST" action="{{ url_for('admin.approve_booking', booking_id=booking.booking_id) }}" style="margin-bottom: 1rem;">
+                <div class="form-group">
+                    <label class="form-label" for="admin_notes_approve">Approval Notes (Optional)</label>
+                    <textarea id="admin_notes_approve" name="admin_notes" class="form-control" rows="2"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%; font-weight: 600;">Approve & Mark Car Unavailable</button>
+            </form>
+            
+            <hr style="border: 0; border-top: 1px solid var(--gray-light); margin: 1.5rem 0;">
+            
+            <form method="POST" action="{{ url_for('admin.reject_booking', booking_id=booking.booking_id) }}" onsubmit="return confirm('Are you sure you want to reject this booking?');">
+                <div class="form-group">
+                    <label class="form-label" for="admin_notes_reject">Rejection Reason (Required)</label>
+                    <textarea id="admin_notes_reject" name="admin_notes" class="form-control" rows="2" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger" style="width: 100%;">Reject Booking</button>
+            </form>
+        </div>
+        {% elif booking.admin_notes %}
+        <div class="card" style="margin-bottom: 0; background: #F9FAFB;">
+            <h3 style="margin-bottom: 0.5rem; font-size: 1rem; color: var(--gray);">Admin Notes</h3>
+            <p style="font-size: 0.875rem;">{{ booking.admin_notes }}</p>
+        </div>
+        {% endif %}
+        
+    </div>
+</div>
+{% end block %}

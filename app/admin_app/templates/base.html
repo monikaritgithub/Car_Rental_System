@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin - Smriti Car Rental{% end block %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    {% if session.get('admin_id') %}
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            Smriti Admin
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' else '' }}">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.cars') }}" class="{{ 'active' if request.endpoint == 'admin.cars' or request.endpoint == 'admin.add_car' or request.endpoint == 'admin.edit_car' else '' }}">Fleet Management</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.bookings') }}" class="{{ 'active' if request.endpoint == 'admin.bookings' or request.endpoint == 'admin.booking_detail' else '' }}">Bookings</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.payments') }}" class="{{ 'active' if request.endpoint == 'admin.payments' else '' }}">Payments</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.report') }}" class="{{ 'active' if request.endpoint == 'admin.report' else '' }}">Reports</a>
+            </li>
+        </ul>
+        <div class="user-info">
+            <div>{{ session.get('admin_name') }}</div>
+            <div style="font-size: 0.75rem;">ID: {{ session.get('admin_employee_id') }}</div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <header class="topbar">
+            <a href="{{ url_for('admin.logout') }}" class="btn btn-outline btn-sm">Sign Out</a>
+        </header>
+
+        <main class="content-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% end for %}
+                {% endif %}
+            {% end with %}
+
+            {% block content %}{% end block %}
+        </main>
+    </div>
+    
+    {% else %}
+        <!-- For login page -->
+        {% block login_content %}{% end block %}
+    {% endif %}
+</body>
+</html>
