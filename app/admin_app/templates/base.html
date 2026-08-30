@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Admin - Smriti Car Rental{% end block %}</title>
+    <title>{% block title %}Admin - Smriti Car Rental{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -50,17 +50,17 @@
                         <div class="alert alert-{{ category }}">
                             {{ message }}
                         </div>
-                    {% end for %}
+                    {% endfor %}
                 {% endif %}
-            {% end with %}
+            {% endwith %}
 
-            {% block content %}{% end block %}
+            {% block content %}{% endblock %}
         </main>
     </div>
     
     {% else %}
         <!-- For login page -->
-        {% block login_content %}{% end block %}
+        {% block login_content %}{% endblock %}
     {% endif %}
 </body>
 </html>

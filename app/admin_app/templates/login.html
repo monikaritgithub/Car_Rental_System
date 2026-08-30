@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Admin Login - Smriti Car Rental{% end block %}
+{% block title %}Admin Login - Smriti Car Rental{% endblock %}
 
 {% block login_content %}
 <div class="login-page">
@@ -13,9 +13,9 @@
                     <div class="alert alert-{{ category }}">
                         {{ message }}
                     </div>
-                {% end for %}
+                {% endfor %}
             {% endif %}
-        {% end with %}
+        {% endwith %}
         
         <form method="POST" action="{{ url_for('admin.login') }}">
             <div class="form-group">
@@ -32,4 +32,4 @@
         </form>
     </div>
 </div>
-{% end block %}
+{% endblock %}

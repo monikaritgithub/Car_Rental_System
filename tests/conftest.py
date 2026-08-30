@@ -49,6 +49,8 @@ def sample_customer(customer_app):
         customer.set_password("password123")
         db.session.add(customer)
         db.session.commit()
+        db.session.refresh(customer)
+        db.session.expunge(customer)
         return customer
 
 @pytest.fixture
@@ -63,6 +65,8 @@ def sample_admin(admin_app):
         admin.set_password("admin123")
         db.session.add(admin)
         db.session.commit()
+        db.session.refresh(admin)
+        db.session.expunge(admin)
         return admin
 
 @pytest.fixture
@@ -79,4 +83,6 @@ def sample_car(customer_app):
         )
         db.session.add(car)
         db.session.commit()
+        db.session.refresh(car)
+        db.session.expunge(car)
         return car

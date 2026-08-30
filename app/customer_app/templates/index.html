@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Smriti Car Rental - Premium Fleet{% end block %}
+{% block title %}Smriti Car Rental - Premium Fleet{% endblock %}
 
 {% block content %}
 <div class="hero">
@@ -28,10 +28,10 @@
             <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="btn btn-outline" style="width: 100%;">View Details</a>
         </div>
     </div>
-    {% end for %}
+    {% endfor %}
 </div>
 
 <div style="text-align: center; margin-top: 3rem;">
     <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-secondary">View All Vehicles</a>
 </div>
-{% end block %}
+{% endblock %}

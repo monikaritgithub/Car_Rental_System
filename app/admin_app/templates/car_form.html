@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ 'Add New Car' if action == 'add' else 'Edit Car ' ~ car.car_id }} - Smriti Admin{% end block %}
+{% block title %}{{ 'Add New Car' if action == 'add' else 'Edit Car ' ~ car.car_id }} - Smriti Admin{% endblock %}
 
 {% block content %}
 <a href="{{ url_for('admin.cars') }}" style="display: inline-block; margin-bottom: 1.5rem; font-size: 0.875rem;">&larr; Back to Fleet</a>
@@ -74,4 +74,4 @@
         </div>
     </form>
 </div>
-{% end block %}
+{% endblock %}

@@ -1,9 +1,11 @@
 from datetime import date, timedelta
 from app.services import booking_engine, car_service
 from app.models.booking import STATUS_PENDING, STATUS_APPROVED
+from database import db
 
 def test_validate_availability_valid(customer_app, sample_car):
     with customer_app.app_context():
+        db.session.add(sample_car)
         start = date.today() + timedelta(days=1)
         end = start + timedelta(days=3)
         valid, msg = booking_engine.validate_availability(sample_car, start, end)
@@ -12,6 +14,7 @@ def test_validate_availability_valid(customer_app, sample_car):
 
 def test_validate_availability_past_date(customer_app, sample_car):
     with customer_app.app_context():
+        db.session.add(sample_car)
         start = date.today() - timedelta(days=1)
         end = date.today() + timedelta(days=2)
         valid, msg = booking_engine.validate_availability(sample_car, start, end)
@@ -20,6 +23,7 @@ def test_validate_availability_past_date(customer_app, sample_car):
 
 def test_validate_availability_car_unavailable(customer_app, sample_car):
     with customer_app.app_context():
+        db.session.add(sample_car)
         sample_car.available_now = False
         start = date.today() + timedelta(days=1)
         end = start + timedelta(days=3)
@@ -29,6 +33,8 @@ def test_validate_availability_car_unavailable(customer_app, sample_car):
 
 def test_create_and_approve_booking(customer_app, sample_customer, sample_car):
     with customer_app.app_context():
+        db.session.add(sample_customer)
+        db.session.add(sample_car)
         start = date.today() + timedelta(days=1)
         end = start + timedelta(days=3)
         

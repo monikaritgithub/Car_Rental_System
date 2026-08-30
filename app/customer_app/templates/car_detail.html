@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ car.year }} {{ car.make }} {{ car.model }} - Smriti Car Rental{% end block %}
+{% block title %}{{ car.year }} {{ car.make }} {{ car.model }} - Smriti Car Rental{% endblock %}
 
 {% block content %}
 <a href="{{ url_for('customer.browse_cars') }}" style="display: inline-block; margin-bottom: 2rem;">&larr; Back to Fleet</a>
@@ -51,4 +51,4 @@
         </div>
     </div>
 </div>
-{% end block %}
+{% endblock %}
