@@ -71,3 +71,7 @@ temp/
 
 # Flask session files
 flask_session/
+
+# AI Agent tracking files
+state.json
+task.md
