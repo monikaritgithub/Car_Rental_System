@@ -9,7 +9,8 @@ This implements:
 from typing import Optional
 from database import db
 from app.models.customer import Customer
-
+import random
+from datetime import datetime
 
 def register_customer(name: str, email: str, password: str,
                        phone_no: str, license_id_no: str,
@@ -28,12 +29,19 @@ def register_customer(name: str, email: str, password: str,
     if db.session.query(Customer).filter_by(license_id_no=license_id_no.strip()).first():
         return None, "This license ID is already registered to another account."
 
+    # Generate random 16 digit card number and expiry date
+    card_no = "".join([str(random.randint(0, 9)) for _ in range(16)])
+    expiry_month = f"{random.randint(1, 12):02d}"
+    expiry_year = str(datetime.now().year + random.randint(1, 5))[-2:]
+    generated_payment_info = f"Card: {card_no} Exp: {expiry_month}/{expiry_year}"
+
     customer = Customer(
         name=name.strip(),
         email=email.lower().strip(),
         phone_no=phone_no.strip(),
         license_id_no=license_id_no.strip(),
-        address=address.strip()
+        address=address.strip(),
+        payment_info=generated_payment_info
     )
     customer.set_password(password)
 
