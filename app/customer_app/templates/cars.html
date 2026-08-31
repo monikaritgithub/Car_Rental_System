@@ -1,43 +1,81 @@
 {% extends "base.html" %}
 
-{% block title %}Our Fleet - Smriti Car Rental{% endblock %}
+{% block title %}Our Fleet — Smriti Car Rental{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h2>Available Vehicles</h2>
-    
-    <div style="display: flex; gap: 0.5rem;">
-        <a href="{{ url_for('customer.browse_cars') }}" class="btn {{ 'btn-primary' if not selected_category else 'btn-outline' }}">All</a>
+
+<div class="page-header">
+    <h1 class="section-title">Our <span>Fleet</span></h1>
+    <p style="color:var(--text-muted); margin-top:0.5rem;">
+        Browse our full collection of {{ cars|length }} premium vehicles
+    </p>
+</div>
+
+<!-- Category Filter Bar -->
+<div class="section-header" style="margin-bottom:2.5rem;">
+    <div class="filter-bar">
+        <a href="{{ url_for('customer.browse_cars') }}"
+           class="btn {{ 'btn-primary' if not selected_category else 'btn-outline' }}">
+           All
+        </a>
         {% for cat in categories %}
-            <a href="{{ url_for('customer.browse_cars', category=cat) }}" class="btn {{ 'btn-primary' if selected_category == cat else 'btn-outline' }}">{{ cat }}</a>
+        <a href="{{ url_for('customer.browse_cars', category=cat) }}"
+           class="btn {{ 'btn-primary' if selected_category == cat else 'btn-outline' }}">
+           {{ cat }}
+        </a>
         {% endfor %}
     </div>
 </div>
 
 {% if not cars %}
-<div style="text-align: center; padding: 4rem; background: var(--white); border-radius: var(--radius-lg);">
-    <h3>No vehicles currently available</h3>
-    <p style="color: var(--gray); margin-top: 1rem;">Please check back later or try a different category.</p>
+<div style="text-align:center; padding:5rem 2rem; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
+    <span style="font-size:4rem;">🔍</span>
+    <h3 style="margin-top:1rem;">No Vehicles Found</h3>
+    <p style="color:var(--text-muted); margin-top:0.5rem;">Try a different category or check back later.</p>
 </div>
 {% else %}
 <div class="car-grid">
     {% for car in cars %}
     <div class="car-card">
-        {% if car.image %}
-            <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}" alt="{{ car.make }} {{ car.model }}" class="car-img">
-        {% else %}
-            <div class="car-img" style="background: #e5e7eb; display: flex; align-items: center; justify-content: center; color: #9ca3af;">No Image</div>
-        {% endif %}
+        <div class="car-img-wrapper">
+            {% if car.category in ['Luxury'] %}
+                <div class="car-badge">✦ Luxury</div>
+            {% elif car.category == 'SUV' %}
+                <div class="car-badge">⬆ Popular</div>
+            {% endif %}
+
+            <div class="car-avail-badge">● Available</div>
+
+            {% if car.image %}
+                <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}"
+                     alt="{{ car.make }} {{ car.model }}" class="car-img">
+            {% else %}
+                <div class="car-img-placeholder">🚗</div>
+            {% endif %}
+        </div>
+
         <div class="car-info">
             <span class="car-category">{{ car.category }}</span>
             <h3 class="car-title">{{ car.year }} {{ car.make }} {{ car.model }}</h3>
-            <div class="car-price">
-                ${{ "%.2f"|format(car.daily_rate) }} <span>/ day</span>
+
+            <div class="car-specs-mini">
+                <span class="spec-tag">🛣️ {{ "%.0f"|format(car.mileage) }} km</span>
+                <span class="spec-tag">📅 {{ car.min_rent_period }}–{{ car.max_rent_period }}d</span>
             </div>
-            <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="btn btn-outline" style="width: 100%;">View Details</a>
+
+            <div class="car-price-row">
+                <div class="car-price">
+                    ${{ "%.0f"|format(car.daily_rate) }}
+                    <span class="per-day">per day</span>
+                </div>
+                <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="btn btn-primary">
+                    Book
+                </a>
+            </div>
         </div>
     </div>
     {% endfor %}
 </div>
 {% endif %}
+
 {% endblock %}

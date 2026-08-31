@@ -1,7 +1,7 @@
 def test_index_page(customer_client):
     response = customer_client.get("/")
     assert response.status_code == 200
-    assert b"Experience the Journey" in response.data
+    assert b"Drive Your" in response.data
 
 def test_browse_cars(customer_client, sample_car):
     response = customer_client.get("/cars")

@@ -1,72 +1,132 @@
 {% extends "base.html" %}
 
-{% block title %}Smriti Car Rental - Premium Fleet{% endblock %}
+{% block title %}Smriti Car Rental — Drive Your Dreams{% endblock %}
 
 {% block content %}
-<!-- Premium Hero Section -->
+
+<!-- ────────────────────────────────────────
+     FULL-BLEED HERO — BMW 3 Series hero BG
+──────────────────────────────────────────── -->
 <div class="hero">
+    <!-- Background Car Image -->
+    <div class="hero-bg"
+         style="background-image: url('{{ url_for('customer.serve_image', filename='bmw-3series.jpg') }}');">
+    </div>
+    <!-- Dark gradient overlay -->
+    <div class="hero-overlay"></div>
+
+    <!-- Content -->
     <div class="hero-content">
-        <h1>Drive Your <span>Dreams</span> Today.</h1>
-        <p>Experience the ultimate premium car rental service. Whether for business or adventure, we provide top-tier vehicles with transparent pricing, zero hidden fees, and impeccable service.</p>
-        <div style="display: flex; gap: 1rem;">
-            <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2.5rem;">Explore Fleet</a>
-            <a href="#features" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.3); font-size: 1.1rem; padding: 0.8rem 2.5rem;">Learn More</a>
+        <div class="hero-tag">✦ New Zealand's #1 Premium Rental</div>
+
+        <h1>
+            Drive Your<br>
+            <span class="gradient-text">Dreams Today.</span>
+        </h1>
+
+        <p>
+            Choose from our exclusive fleet of meticulously maintained vehicles.
+            From city sedans to rugged off-road trucks — we have the perfect car
+            for every journey.
+        </p>
+
+        <div class="hero-cta">
+            <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary" style="font-size:1.05rem; padding:0.9rem 2.5rem;">
+                🚗 Browse Fleet
+            </a>
+            {% if not session.get('customer_id') %}
+            <a href="{{ url_for('customer.register') }}" class="btn btn-secondary" style="font-size:1.05rem; padding:0.9rem 2.5rem;">
+                Create Account
+            </a>
+            {% endif %}
         </div>
     </div>
-    <div class="hero-image-container">
-        <!-- Using the BMW 3 Series as the flagship hero image -->
-        <img src="{{ url_for('customer.serve_image', filename='bmw-3series.jpg') }}" alt="Premium BMW Car" class="hero-image">
+
+    <!-- Floating stats -->
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <div class="hero-stat-num">{{ cars|length }}+</div>
+            <div class="hero-stat-label">Vehicles</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-num">5★</div>
+            <div class="hero-stat-label">Rating</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-num">24/7</div>
+            <div class="hero-stat-label">Support</div>
+        </div>
     </div>
 </div>
 
-<!-- Features Section -->
-<div id="features" class="features-grid">
+<!-- ────────────────────────────────────────
+     FEATURE HIGHLIGHTS
+──────────────────────────────────────────── -->
+<div class="features-grid">
     <div class="feature-box">
-        <div class="feature-icon">💎</div>
-        <h3>Premium Vehicles</h3>
-        <p style="color: var(--gray); font-size: 0.95rem; margin-top: 0.5rem;">Our fleet consists of well-maintained, latest-model vehicles to ensure maximum comfort and safety.</p>
+        <span class="feature-icon">💎</span>
+        <h3>Premium Fleet</h3>
+        <p>Latest model vehicles, zero compromise on quality or safety.</p>
     </div>
     <div class="feature-box">
-        <div class="feature-icon">⚡</div>
+        <span class="feature-icon">⚡</span>
         <h3>Instant Booking</h3>
-        <p style="color: var(--gray); font-size: 0.95rem; margin-top: 0.5rem;">Skip the lines. Our seamless digital booking process gets you on the road in minutes.</p>
+        <p>Book in under 2 minutes. Our seamless process gets you on the road fast.</p>
     </div>
     <div class="feature-box">
-        <div class="feature-icon">🛡️</div>
+        <span class="feature-icon">🛡️</span>
         <h3>Fully Insured</h3>
-        <p style="color: var(--gray); font-size: 0.95rem; margin-top: 0.5rem;">Drive with peace of mind. Comprehensive insurance coverage is included with every rental.</p>
+        <p>Every rental includes comprehensive coverage for your peace of mind.</p>
+    </div>
+    <div class="feature-box">
+        <span class="feature-icon">💳</span>
+        <h3>Transparent Pricing</h3>
+        <p>Zero hidden fees. What you see is exactly what you pay — guaranteed.</p>
     </div>
 </div>
 
-<h2 class="section-title">Available Right Now</h2>
+<!-- ────────────────────────────────────────
+     CAR FLEET GRID
+──────────────────────────────────────────── -->
+<div class="section-header">
+    <h2 class="section-title">Available <span>Right Now</span></h2>
+    <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-outline">View All →</a>
+</div>
 
 <div class="car-grid">
     {% for car in cars[:6] %}
     <div class="car-card">
         <div class="car-img-wrapper">
-            {% if car.category == 'Luxury' or car.category == 'SUV' %}
-                <div class="car-badge">Popular</div>
+            {% if car.category in ['Luxury', 'SUV'] %}
+                <div class="car-badge">
+                    {% if car.category == 'Luxury' %}✦ Luxury{% else %}⬆ Popular{% endif %}
+                </div>
             {% endif %}
-            
+
+            <div class="car-avail-badge">● Available</div>
+
             {% if car.image %}
-                <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}" alt="{{ car.make }} {{ car.model }}" class="car-img">
+                <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}"
+                     alt="{{ car.make }} {{ car.model }}" class="car-img">
             {% else %}
-                <div class="car-img" style="background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">No Image Available</div>
+                <div class="car-img-placeholder">🚗</div>
             {% endif %}
         </div>
-        
+
         <div class="car-info">
             <span class="car-category">{{ car.category }}</span>
             <h3 class="car-title">{{ car.year }} {{ car.make }} {{ car.model }}</h3>
-            
+
             <div class="car-specs-mini">
-                <span>🛣️ {{ "%.0f"|format(car.mileage) }} mi</span>
-                <span>⏱️ {{ car.min_rent_period }} Day Min</span>
+                <span class="spec-tag">🛣️ {{ "%.0f"|format(car.mileage) }} km</span>
+                <span class="spec-tag">📅 {{ car.min_rent_period }}d min</span>
+                <span class="spec-tag">📅 {{ car.max_rent_period }}d max</span>
             </div>
-            
+
             <div class="car-price-row">
                 <div class="car-price">
-                    ${{ "%.2f"|format(car.daily_rate) }} <span>/ day</span>
+                    ${{ "%.0f"|format(car.daily_rate) }}
+                    <span class="per-day">per day</span>
                 </div>
                 <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="btn btn-primary">Book Now</a>
             </div>
@@ -75,7 +135,10 @@
     {% endfor %}
 </div>
 
-<div style="text-align: center; margin-top: 4rem; margin-bottom: 2rem;">
-    <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-secondary" style="font-size: 1.1rem; padding: 1rem 3rem;">View Entire Fleet Collection</a>
+<div style="text-align:center; margin-top:4rem; padding-bottom:2rem;">
+    <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary" style="font-size:1.05rem; padding:1rem 3rem;">
+        Explore Full Fleet Collection →
+    </a>
 </div>
+
 {% endblock %}
