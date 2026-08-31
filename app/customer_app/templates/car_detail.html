@@ -1,53 +1,79 @@
 {% extends "base.html" %}
 
-{% block title %}{{ car.year }} {{ car.make }} {{ car.model }} - Smriti Car Rental{% endblock %}
+{% block title %}{{ car.make }} {{ car.model }} - Smriti Rentals{% endblock %}
 
 {% block content %}
-<a href="{{ url_for('customer.browse_cars') }}" style="display: inline-block; margin-bottom: 2rem;">&larr; Back to Fleet</a>
+<a href="{{ url_for('customer.browse_cars') }}" style="display:inline-flex; align-items:center; gap:0.4rem; color:var(--text-muted); font-size:0.85rem; margin-bottom:1.5rem; font-weight:700;">
+    &larr; Back to Vehicles
+</a>
 
-<div class="detail-container">
-    <div>
-        {% if car.image %}
-            <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}" alt="{{ car.make }} {{ car.model }}" class="detail-img">
-        {% else %}
-            <div class="detail-img" style="background: #e5e7eb; display: flex; align-items: center; justify-content: center; color: #9ca3af; height: 300px;">No Image</div>
-        {% endif %}
-    </div>
-    
-    <div>
-        <span class="car-category">{{ car.category }}</span>
-        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">{{ car.year }} {{ car.make }} {{ car.model }}</h1>
-        <div style="font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 1.5rem;">
-            ${{ "%.2f"|format(car.daily_rate) }} <span style="font-size: 1rem; color: var(--gray); font-weight: 400;">/ day</span>
-        </div>
-        
-        <p style="color: var(--gray); margin-bottom: 2rem; font-size: 1.125rem;">{{ car.description }}</p>
-        
-        <div class="detail-specs">
-            <div class="spec-item">
-                <span class="spec-label">Car ID</span>
-                <span class="spec-value">{{ car.car_id }}</span>
-            </div>
-            <div class="spec-item">
-                <span class="spec-label">Mileage</span>
-                <span class="spec-value">{{ "%.1f"|format(car.mileage) }} km</span>
-            </div>
-            <div class="spec-item">
-                <span class="spec-label">Minimum Rental</span>
-                <span class="spec-value">{{ car.min_rent_period }} Days</span>
-            </div>
-            <div class="spec-item">
-                <span class="spec-label">Maximum Rental</span>
-                <span class="spec-value">{{ car.max_rent_period }} Days</span>
-            </div>
-        </div>
-        
-        <div style="margin-top: 3rem;">
-            {% if car.available_now %}
-                <a href="{{ url_for('customer.book_car', car_id=car.car_id) }}" class="btn btn-primary" style="width: 100%; font-size: 1.125rem; padding: 1rem;">Book This Car</a>
-            {% else %}
-                <button class="btn btn-primary" style="width: 100%; font-size: 1.125rem; padding: 1rem; opacity: 0.5; cursor: not-allowed;" disabled>Currently Unavailable</button>
+<div class="form-container" style="max-width:900px; padding:0; overflow:hidden;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+        <!-- Left: Image -->
+        <div style="background:#e2e8f0; display:flex; align-items:center; justify-content:center; position:relative; min-height:400px;">
+            {% if car.category == 'SUV' or car.category == 'Luxury' %}
+                <div class="car-badge">{{ 'HYBRID' if car.category == 'Luxury' else 'POPULAR' }}</div>
             {% endif %}
+            
+            {% if car.image %}
+                <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}" alt="{{ car.make }}" style="width:100%; height:100%; object-fit:cover;">
+            {% else %}
+                <span style="color:#a0aec0; font-weight:600;">No Image</span>
+            {% endif %}
+        </div>
+        
+        <!-- Right: Details -->
+        <div style="padding:2.5rem; display:flex; flex-direction:column;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem;">
+                <h1 style="font-size:2.2rem; margin:0; line-height:1.1;">{{ car.make }}<br>{{ car.model }}</h1>
+                <div class="fuel-gauge" style="position:static;">
+                    <svg viewBox="0 0 100 100" fill="none" stroke-width="8" style="width:40px; height:40px;">
+                        <path d="M 20 80 A 40 40 0 1 1 80 80" stroke="#e2e8f0" stroke-linecap="round"/>
+                        <path d="M 20 80 A 40 40 0 0 1 80 80" stroke="var(--success)" stroke-linecap="round" stroke-dasharray="100 200"/>
+                        <circle cx="50" cy="80" r="6" fill="#4a5568"/>
+                        <line x1="50" y1="80" x2="30" y2="50" stroke="#4a5568" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div style="color:var(--text-muted); font-size:0.9rem; font-weight:600; margin-bottom:1.5rem;">{{ car.year }} &bull; {{ car.category }}</div>
+            
+            <div style="margin-bottom:2rem;">
+                <div style="font-size:2.5rem; font-weight:800; color:var(--primary); line-height:1;">
+                    ${{ "%.2f"|format(car.daily_rate) }}<span style="font-size:1rem; color:var(--text-muted); font-weight:600;">/day</span>
+                </div>
+            </div>
+            
+            <p style="color:var(--text-secondary); line-height:1.7; margin-bottom:2rem; font-size:0.95rem;">
+                {{ car.description }}
+            </p>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2.5rem; border-top:1px solid var(--border-light); padding-top:1.5rem;">
+                <div>
+                    <div style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Mileage</div>
+                    <div style="font-weight:600;">{{ "%.0f"|format(car.mileage) }} km</div>
+                </div>
+                <div>
+                    <div style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Transmission</div>
+                    <div style="font-weight:600;">Auto</div>
+                </div>
+                <div>
+                    <div style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Min Rental</div>
+                    <div style="font-weight:600;">{{ car.min_rent_period }} days</div>
+                </div>
+                <div>
+                    <div style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Max Rental</div>
+                    <div style="font-weight:600;">{{ car.max_rent_period }} days</div>
+                </div>
+            </div>
+            
+            <div style="margin-top:auto;">
+                {% if car.available_now %}
+                    <a href="{{ url_for('customer.book_car', car_id=car.car_id) }}" class="btn btn-primary" style="width:100%; padding:1rem; font-size:1.1rem;">Select Dates &rarr;</a>
+                {% else %}
+                    <button class="btn btn-secondary" style="width:100%; padding:1rem; font-size:1.1rem; opacity:0.6; cursor:not-allowed;" disabled>Currently Unavailable</button>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

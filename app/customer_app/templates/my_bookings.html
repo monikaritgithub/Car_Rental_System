@@ -1,71 +1,71 @@
 {% extends "base.html" %}
 
-{% block title %}My Bookings - Smriti Car Rental{% endblock %}
+{% block title %}My Reservations - Smriti Rentals{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h2>My Reservations</h2>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem;">
+    <h1 style="font-size:2.2rem; margin:0;">My Reservations</h1>
     <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary">Book Another Car</a>
 </div>
 
 {% if not bookings %}
-<div style="text-align: center; padding: 4rem; background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow);">
-    <h3>You don't have any bookings yet.</h3>
-    <p style="color: var(--gray); margin-top: 1rem;">Explore our fleet to find the perfect vehicle for your next trip.</p>
+<div style="text-align:center; padding:5rem 2rem; background:var(--white); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); border:1px solid var(--border-light);">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:1rem;">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+    <h3 style="font-size:1.5rem; margin-bottom:0.5rem;">No bookings found</h3>
+    <p style="color:var(--text-muted); font-weight:500;">Explore our fleet to find the perfect vehicle for your next trip.</p>
 </div>
 {% else %}
 <div class="car-grid">
     {% for booking in bookings %}
-    <div class="car-card" style="position: relative;">
-        <div style="position: absolute; top: 1rem; right: 1rem; z-index: 10;">
-            {% if booking.booking_status == 'PENDING' %}
-                <span class="badge badge-pending">Pending</span>
-            {% elif booking.booking_status == 'APPROVED' %}
-                <span class="badge badge-approved">Approved</span>
-            {% elif booking.booking_status == 'REJECTED' %}
-                <span class="badge badge-rejected">Rejected</span>
-            {% elif booking.booking_status == 'CANCELLED' %}
-                <span class="badge badge-cancelled">Cancelled</span>
+    <div class="car-card" style="position:relative;">
+        <div style="position:absolute; top:1rem; right:1rem; z-index:10;">
+            <span class="badge badge-{{ booking.booking_status|lower }}" style="font-size:0.8rem; padding:0.4rem 1rem;">
+                {{ booking.booking_status }}
+            </span>
+        </div>
+        
+        <div class="car-img-wrapper" style="height:160px;">
+            {% if booking.car.image %}
+                <img src="{{ url_for('customer.serve_image', filename=booking.car.image.split('/')[-1]) }}" alt="{{ booking.car.make }}" class="car-img">
+            {% else %}
+                <div style="width:100%; height:100%; background:#e2e8f0;"></div>
             {% endif %}
         </div>
         
-        {% if booking.car.image %}
-            <img src="{{ url_for('customer.serve_image', filename=booking.car.image.split('/')[-1]) }}" alt="{{ booking.car.make }}" class="car-img" style="height: 150px;">
-        {% else %}
-            <div class="car-img" style="height: 150px; background: #e5e7eb;"></div>
-        {% endif %}
-        
         <div class="car-info">
-            <span class="car-category">Ref: {{ booking.booking_id }}</span>
-            <h3 class="car-title">{{ booking.car.year }} {{ booking.car.make }} {{ booking.car.model }}</h3>
+            <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:0.25rem;">REF: {{ booking.booking_id }}</div>
+            <h3 class="car-title" style="margin-bottom:1.5rem;">{{ booking.car.year }} {{ booking.car.make }} {{ booking.car.model }}</h3>
             
-            <div style="margin: 1rem 0; font-size: 0.875rem;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
-                    <span style="color: var(--gray);">From:</span>
-                    <strong>{{ booking.start_date }}</strong>
+            <div style="margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border-light); font-size:0.9rem;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                    <span style="color:var(--text-muted); font-weight:600;">Pick-up</span>
+                    <strong style="color:var(--secondary);">{{ booking.start_date }}</strong>
                 </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray);">To:</span>
-                    <strong>{{ booking.end_date }}</strong>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-muted); font-weight:600;">Drop-off</span>
+                    <strong style="color:var(--secondary);">{{ booking.end_date }}</strong>
                 </div>
             </div>
             
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:auto;">
                 <div>
-                    <div style="font-size: 0.75rem; color: var(--gray);">Total Paid</div>
-                    <div style="font-weight: 700; color: var(--primary);">${{ "%.2f"|format(booking.total_fee) }}</div>
+                    <div style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:0.2rem;">Total Paid</div>
+                    <div style="font-size:1.5rem; font-weight:800; color:var(--primary); line-height:1;">${{ "%.2f"|format(booking.total_fee) }}</div>
                 </div>
                 
                 {% if booking.booking_status == 'PENDING' %}
                 <form method="POST" action="{{ url_for('customer.cancel_booking', booking_id=booking.booking_id) }}" onsubmit="return confirm('Are you sure you want to cancel this reservation?');">
-                    <button type="submit" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: var(--danger); border-color: var(--danger);">Cancel</button>
+                    <button type="submit" class="btn btn-outline" style="padding:0.4rem 0.8rem; font-size:0.8rem; color:var(--danger); border-color:var(--danger);">Cancel</button>
                 </form>
                 {% endif %}
             </div>
             
             {% if booking.admin_notes %}
-            <div style="margin-top: 1rem; padding: 0.5rem; background: #F3F4F6; border-radius: var(--radius); font-size: 0.75rem;">
-                <strong>Admin Note:</strong> {{ booking.admin_notes }}
+            <div style="margin-top:1.5rem; padding:1rem; background:var(--bg-main); border-radius:var(--radius); border-left:3px solid var(--primary); font-size:0.85rem;">
+                <strong style="display:block; margin-bottom:0.25rem; font-size:0.75rem; text-transform:uppercase;">Admin Note</strong>
+                <span style="color:var(--text-secondary); font-weight:500;">{{ booking.admin_notes }}</span>
             </div>
             {% endif %}
         </div>

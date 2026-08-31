@@ -1,46 +1,49 @@
 {% extends "base.html" %}
 
-{% block title %}Payment Checkout - Smriti Car Rental{% endblock %}
+{% block title %}Checkout — Smriti Rentals{% endblock %}
 
 {% block content %}
-<div class="detail-container" style="grid-template-columns: 1fr 1fr;">
-    <div>
-        <h2 style="margin-bottom: 1.5rem;">Booking Summary</h2>
-        <div style="background: #F3F4F6; padding: 1.5rem; border-radius: var(--radius); margin-bottom: 2rem;">
-            <h3 style="font-size: 1.25rem;">{{ booking.car_name }}</h3>
-            <p style="color: var(--gray); margin-bottom: 1rem;">ID: {{ booking.car_display_id }}</p>
+<div style="max-width:900px; margin:0 auto;">
+    <h1 style="font-size:2rem; margin-bottom:2rem; text-align:center;">Complete your booking</h1>
+    
+    <div style="display:grid; grid-template-columns:1fr 1.2fr; gap:2rem;">
+        <!-- Left: Summary -->
+        <div class="form-container" style="padding:2rem;">
+            <h2 style="font-size:1.2rem; margin-bottom:1.5rem; color:var(--secondary);">Booking Summary</h2>
             
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="color: var(--gray);">Dates</span>
-                <strong>{{ booking.start_date }} to {{ booking.end_date }}</strong>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="color: var(--gray);">Duration</span>
-                <strong>{{ booking.rental_days }} day(s)</strong>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="color: var(--gray);">Daily Rate</span>
-                <strong>${{ "%.2f"|format(booking.daily_rate) }}</strong>
+            <div style="background:var(--bg-main); padding:1.5rem; border-radius:var(--radius); margin-bottom:1.5rem;">
+                <h3 style="font-size:1.1rem; margin-bottom:0.25rem;">{{ booking.car_name }}</h3>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1.5rem; font-weight:600;">Ref: {{ booking.car_display_id }}</div>
+                
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem; font-size:0.9rem;">
+                    <span style="color:var(--text-muted); font-weight:600;">Dates</span>
+                    <strong style="color:var(--secondary);">{{ booking.start_date }} &rarr; {{ booking.end_date }}</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem; font-size:0.9rem;">
+                    <span style="color:var(--text-muted); font-weight:600;">Duration</span>
+                    <strong style="color:var(--secondary);">{{ booking.rental_days }} day(s)</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
+                    <span style="color:var(--text-muted); font-weight:600;">Daily Rate</span>
+                    <strong style="color:var(--secondary);">${{ "%.2f"|format(booking.daily_rate) }}</strong>
+                </div>
             </div>
             
-            <hr style="border: 0; border-top: 1px solid var(--gray-light); margin: 1rem 0;">
-            
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: 600;">Total Fee</span>
-                <span style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">${{ "%.2f"|format(booking.total_fee) }}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:1.5rem;">
+                <span style="font-weight:700; color:var(--secondary);">Total Amount</span>
+                <span style="font-size:1.8rem; font-weight:800; color:var(--primary);">${{ "%.2f"|format(booking.total_fee) }}</span>
             </div>
         </div>
-    </div>
 
-    <div>
-        <div class="form-container" style="box-shadow: none; padding: 0; max-width: 100%;">
-            <h3 style="margin-bottom: 0.5rem;">Payment Information</h3>
-            <p style="color: var(--gray); margin-bottom: 1.5rem; font-size: 0.875rem;">This is a demonstration system. Please use mock payment details.</p>
+        <!-- Right: Payment Form -->
+        <div class="form-container" style="padding:2.5rem;">
+            <h2 style="font-size:1.4rem; margin-bottom:0.5rem;">Payment Details</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:2rem; font-weight:500;">Please use mock payment details for this demonstration.</p>
             
             <form method="POST" action="{{ url_for('customer.payment') }}">
                 <div class="form-group">
                     <label class="form-label" for="card_holder">Name on Card</label>
-                    <input type="text" id="card_holder" name="card_holder" class="form-control" required>
+                    <input type="text" id="card_holder" name="card_holder" class="form-control" placeholder="J. DOE" required>
                 </div>
                 
                 <div class="form-group">
@@ -48,7 +51,7 @@
                     <input type="text" id="card_number" name="card_number" class="form-control" placeholder="0000 0000 0000 0000" required>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
                     <div class="form-group">
                         <label class="form-label" for="expiry">Expiry (MM/YY)</label>
                         <input type="text" id="expiry" name="expiry" class="form-control" placeholder="12/28" required>
@@ -59,11 +62,15 @@
                     </div>
                 </div>
                 
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1.125rem;">
-                    Pay ${{ "%.2f"|format(booking.total_fee) }}
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem; padding:1.1rem; font-size:1.1rem;">
+                    Pay Securely &rarr;
                 </button>
-                <div style="text-align: center; margin-top: 1rem;">
-                    <span style="font-size: 0.875rem; color: var(--gray);">🔒 Secure Mock Payment Gateway</span>
+                
+                <div style="text-align:center; margin-top:1.5rem; display:flex; align-items:center; justify-content:center; gap:0.4rem; color:var(--text-muted); font-size:0.8rem; font-weight:600;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    256-bit SSL Encrypted
                 </div>
             </form>
         </div>
