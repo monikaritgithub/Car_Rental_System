@@ -1,6 +1,6 @@
 # Smriti Car Rental System
 
-A complete, full-stack car rental platform built with Python, Flask, and SQLite, featuring a dual-interface architecture — a premium dark-themed customer portal and a secure admin management system.
+A complete, full-stack car rental platform built with Python, Flask, and SQLite. The UI/UX is inspired by [GO Rentals](https://www.gorentals.co.nz/) featuring a clean, professional, light theme for both the customer portal and secure admin management system.
 
 ---
 
@@ -30,8 +30,8 @@ A complete, full-stack car rental platform built with Python, Flask, and SQLite,
 | Backend | Python 3.x, Flask |
 | Database | SQLite with SQLAlchemy ORM |
 | Authentication | Werkzeug password hashing |
-| Frontend | HTML5, Vanilla CSS (dark theme), Jinja2 |
-| Font | Outfit (Google Fonts) |
+| Frontend | HTML5, Vanilla CSS (light corporate theme), Jinja2 |
+| Font | Montserrat (Google Fonts) |
 | Testing | Pytest with pytest-flask |
 
 ---
@@ -116,11 +116,11 @@ Documents the full 21-step booking and payment approval workflow between all sys
 CarRentalSystem/
     app/
         admin_app/
-            static/css/         Admin dark theme CSS
+            static/css/         Admin corporate light theme CSS
             templates/          Admin HTML pages
             routes.py           Admin routes
         customer_app/
-            static/css/         Customer dark theme CSS
+            static/css/         Customer GO Rentals inspired light CSS
             templates/          Customer HTML pages
             routes.py           Customer routes
         models/                 SQLAlchemy models

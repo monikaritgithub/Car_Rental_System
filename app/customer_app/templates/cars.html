@@ -1,83 +1,82 @@
 {% extends "base.html" %}
 
-{% block title %}Our Fleet — Smriti Car Rental{% endblock %}
+{% block title %}Our Vehicles — Smriti Rentals{% endblock %}
 
 {% block content %}
-
-<div class="page-header">
-    <h1 class="section-title">Our <span>Fleet</span></h1>
-    <p style="color:var(--text-muted); margin-top:0.5rem;">Browse our full collection of {{ cars|length }} premium vehicles</p>
+<div style="margin-bottom:2rem;">
+    <h1 style="font-size:2.5rem; margin-bottom:1rem;">Our Vehicles</h1>
+    <p style="color:var(--text-muted); font-size:1.1rem;">Choose from our wide range of {{ cars|length }} rental cars.</p>
 </div>
 
-<!-- Category Filter -->
-<div class="section-header" style="margin-bottom:2.5rem;">
-    <div class="filter-bar">
-        <a href="{{ url_for('customer.browse_cars') }}"
-           class="btn {{ 'btn-primary' if not selected_category else 'btn-outline' }}">All</a>
-        {% for cat in categories %}
-        <a href="{{ url_for('customer.browse_cars', category=cat) }}"
-           class="btn {{ 'btn-primary' if selected_category == cat else 'btn-outline' }}">{{ cat }}</a>
-        {% endfor %}
-    </div>
+<!-- CATEGORY TABS -->
+<div style="display:flex; gap:1rem; margin-bottom:2.5rem; border-bottom: 2px solid var(--border-light); padding-bottom:1rem; overflow-x:auto;">
+    <a href="{{ url_for('customer.browse_cars') }}" 
+       style="font-weight:700; padding:0.5rem 1rem; {% if not selected_category %}border-bottom: 3px solid var(--primary); color:var(--primary);{% else %}color:var(--text-muted);{% endif %}">
+        All Vehicles
+    </a>
+    {% for cat in categories %}
+    <a href="{{ url_for('customer.browse_cars', category=cat) }}" 
+       style="font-weight:700; padding:0.5rem 1rem; {% if selected_category == cat %}border-bottom: 3px solid var(--primary); color:var(--primary);{% else %}color:var(--text-muted);{% endif %}">
+        {{ cat }}
+    </a>
+    {% endfor %}
 </div>
 
 {% if not cars %}
-<div style="text-align:center; padding:6rem 2rem; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
-    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:1rem;">
-        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-    </svg>
-    <h3 style="margin-bottom:0.5rem;">No Vehicles Found</h3>
-    <p style="color:var(--text-muted);">Try a different category or check back later.</p>
+<div style="text-align:center; padding:5rem; background:var(--white); border:1px solid var(--border-light); border-radius:var(--radius-lg);">
+    <h3>No Vehicles Found</h3>
+    <p style="color:var(--text-muted); margin-top:0.5rem;">Please try selecting a different category.</p>
 </div>
 {% else %}
 <div class="car-grid">
     {% for car in cars %}
     <div class="car-card">
         <div class="car-img-wrapper">
-            {% if car.category == 'Luxury' %}
-                <div class="car-badge">Luxury</div>
-            {% elif car.category == 'SUV' %}
-                <div class="car-badge">Popular</div>
+            {% if car.category == 'SUV' or car.category == 'Luxury' %}
+                <div class="car-badge">{{ 'HYBRID' if car.category == 'Luxury' else 'POPULAR' }}</div>
             {% endif %}
-
-            <div class="car-avail-badge">Available</div>
-
             {% if car.image %}
-                <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}"
-                     alt="{{ car.make }} {{ car.model }}" class="car-img">
+                <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}" alt="Car" class="car-img">
             {% else %}
-                <div class="car-img-placeholder">
-                    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-                    </svg>
-                </div>
+                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#e2e8f0; color:#a0aec0;">No Image</div>
             {% endif %}
         </div>
-
+        
         <div class="car-info">
-            <span class="car-category">{{ car.category }}</span>
-            <h3 class="car-title">{{ car.year }} {{ car.make }} {{ car.model }}</h3>
-            <div class="car-specs-mini">
-                <span class="spec-tag">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
-                    {{ car.min_rent_period }}d &mdash; {{ car.max_rent_period }}d
-                </span>
-                <span class="spec-tag">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><path d="M8 5l-5 7 5 7"/><path d="M16 5l5 7-5 7"/></svg>
-                    {{ "%.0f"|format(car.mileage) }} km
-                </span>
+            <div class="fuel-gauge">
+                <svg viewBox="0 0 100 100" fill="none" stroke-width="8">
+                    <!-- Background arc -->
+                    <path d="M 20 80 A 40 40 0 1 1 80 80" stroke="#e2e8f0" stroke-linecap="round"/>
+                    <!-- Foreground arc (green/yellow/red gradient representation) -->
+                    <path d="M 20 80 A 40 40 0 0 1 80 80" stroke="var(--success)" stroke-linecap="round" stroke-dasharray="100 200"/>
+                    <circle cx="50" cy="80" r="6" fill="#4a5568"/>
+                    <!-- Needle -->
+                    <line x1="50" y1="80" x2="30" y2="50" stroke="#4a5568" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+                <span>Fuel efficiency</span>
             </div>
-            <div class="car-price-row">
-                <div class="car-price">
-                    ${{ "%.0f"|format(car.daily_rate) }}
-                    <span class="per-day">per day</span>
+
+            <div class="car-title">{{ car.make }} {{ car.model }}</div>
+            <div class="car-subtitle">1 - 2 year(s) old</div>
+            
+            <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="car-price-link">See prices</a>
+            
+            <div class="car-footer">
+                <div class="car-footer-left">
+                    <span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:2px;"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        Auto
+                    </span>
+                    <span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:2px;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        Petrol
+                    </span>
                 </div>
-                <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="btn btn-primary">Book</a>
+                <div class="car-footer-right">+ info</div>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
 {% endif %}
-
 {% endblock %}

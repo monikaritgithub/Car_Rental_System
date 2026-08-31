@@ -7,7 +7,7 @@
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1rem;">
     <h1 class="page-title" style="margin:0;">Reservations</h1>
     <form method="GET" action="{{ url_for('admin.bookings') }}" style="display:flex; gap:0.75rem; align-items:center;">
-        <select name="status" class="form-control" style="width:auto; padding:0.55rem 1rem;">
+        <select name="status" class="form-control" style="width:auto; padding:0.5rem 1rem;">
             <option value="">All Statuses</option>
             <option value="PENDING" {% if status_filter == 'PENDING' %}selected{% endif %}>Pending</option>
             <option value="APPROVED" {% if status_filter == 'APPROVED' %}selected{% endif %}>Approved</option>
@@ -15,9 +15,6 @@
             <option value="CANCELLED" {% if status_filter == 'CANCELLED' %}selected{% endif %}>Cancelled</option>
         </select>
         <button type="submit" class="btn btn-primary btn-sm">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
             Filter
         </button>
         {% if status_filter %}
@@ -47,11 +44,11 @@
                     <td style="color:var(--text-muted); font-size:0.85rem;">{{ booking.created_at.strftime('%d %b %Y') }}</td>
                     <td>
                         <div style="font-weight:600;">{{ booking.customer.name }}</div>
-                        <div style="font-size:0.78rem; color:var(--text-muted);">{{ booking.customer.email }}</div>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">{{ booking.customer.email }}</div>
                     </td>
                     <td>
                         <div style="font-weight:600;">{{ booking.car.make }} {{ booking.car.model }}</div>
-                        <div style="font-size:0.78rem; color:var(--text-muted);">{{ booking.car.car_id }}</div>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">{{ booking.car.car_id }}</div>
                     </td>
                     <td style="font-size:0.85rem; color:var(--text-secondary);">
                         {{ booking.start_date }}<br>

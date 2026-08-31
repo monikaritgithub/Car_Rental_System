@@ -4,7 +4,7 @@
 {% block page_name %}Payment Records{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Payment <span>Records</span></h1>
+<h1 class="page-title">Payment Records</h1>
 
 <div class="card">
     <div class="table-responsive">
@@ -28,12 +28,12 @@
                     <td style="color:var(--text-muted); font-size:0.85rem;">{{ payment.payment_date.strftime('%d %b %Y') }}</td>
                     <td>
                         <a href="{{ url_for('admin.booking_detail', booking_id=payment.booking.booking_id) }}"
-                           style="color:var(--primary); font-weight:600;">
+                           style="color:var(--secondary); font-weight:700;">
                             {{ payment.booking.booking_id }}
                         </a>
                     </td>
-                    <td style="font-size:0.88rem;">{{ payment.booking.customer.name }}</td>
-                    <td style="font-weight:800; font-size:1.05rem; color:var(--success);">${{ "%.2f"|format(payment.amount) }}</td>
+                    <td style="font-size:0.88rem; font-weight:600;">{{ payment.booking.customer.name }}</td>
+                    <td style="font-weight:700; font-size:1.05rem; color:var(--success);">${{ "%.2f"|format(payment.amount) }}</td>
                     <td><span class="badge badge-{{ payment.payment_status|lower }}">{{ payment.payment_status }}</span></td>
                     <td>
                         <span class="badge badge-{{ payment.confirmed_by_admin|lower }}">
@@ -46,7 +46,7 @@
                             <button type="submit" class="btn btn-primary btn-sm">Confirm</button>
                         </form>
                         {% else %}
-                        <span style="color:var(--text-muted); font-size:0.85rem;">Done</span>
+                        <span style="color:var(--text-muted); font-size:0.85rem; font-weight:600;">Done</span>
                         {% endif %}
                     </td>
                 </tr>

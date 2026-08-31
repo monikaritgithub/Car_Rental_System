@@ -6,13 +6,10 @@
 {% block content %}
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
     <div>
-        <a href="{{ url_for('admin.bookings') }}" style="display:inline-flex; align-items:center; gap:0.4rem; color:var(--text-muted); font-size:0.88rem; margin-bottom:0.75rem;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15,18 9,12 15,6"/>
-            </svg>
-            Back to Reservations
+        <a href="{{ url_for('admin.bookings') }}" style="display:inline-flex; align-items:center; gap:0.4rem; color:var(--text-muted); font-size:0.85rem; margin-bottom:0.5rem; font-weight:600;">
+            &larr; Back to Reservations
         </a>
-        <h1 class="page-title" style="margin:0;">Booking <span>{{ booking.booking_id }}</span></h1>
+        <h1 class="page-title" style="margin:0;">Booking {{ booking.booking_id }}</h1>
     </div>
     <span class="badge badge-{{ booking.booking_status|lower }}" style="font-size:0.85rem; padding:0.5rem 1.25rem;">
         {{ booking.booking_status }}
@@ -27,12 +24,7 @@
         <!-- Customer -->
         <div class="card" style="margin-bottom:0;">
             <div class="card-header">
-                <h3 class="card-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:0.4rem;">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                    </svg>
-                    Customer Information
-                </h3>
+                <h3 class="card-title">Customer Information</h3>
             </div>
             <div class="detail-grid">
                 <div>
@@ -49,23 +41,16 @@
         <!-- Vehicle -->
         <div class="card" style="margin-bottom:0;">
             <div class="card-header">
-                <h3 class="card-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:0.4rem;">
-                        <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-                    </svg>
-                    Vehicle Information
-                </h3>
+                <h3 class="card-title">Vehicle Information</h3>
             </div>
-            <div style="display:flex; gap:1.5rem; align-items:flex-start;">
+            <div style="display:flex; gap:1.5rem; align-items:flex-start; padding: 1.5rem;">
                 {% if booking.car.image %}
                     <img src="{{ url_for('admin.serve_image', filename=booking.car.image.split('/')[-1]) }}"
                          alt="{{ booking.car.make }}"
-                         style="width:160px; height:105px; object-fit:cover; border-radius:var(--radius); border:1px solid var(--border-glass); flex-shrink:0;">
+                         style="width:160px; height:105px; object-fit:cover; border-radius:var(--radius); border:1px solid var(--border-light); flex-shrink:0;">
                 {% else %}
-                    <div style="width:160px; height:105px; background:var(--bg-glass); border-radius:var(--radius); border:1px solid var(--border-glass); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-                        </svg>
+                    <div style="width:160px; height:105px; background:var(--bg-main); border-radius:var(--radius); border:1px solid var(--border-light); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        No Image
                     </div>
                 {% endif %}
                 <div style="flex:1;">
@@ -80,12 +65,7 @@
         <!-- Payment -->
         <div class="card" style="margin-bottom:0;">
             <div class="card-header">
-                <h3 class="card-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:0.4rem;">
-                        <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
-                    </svg>
-                    Payment Record
-                </h3>
+                <h3 class="card-title">Payment Record</h3>
             </div>
             {% if booking.payment %}
             <div class="detail-grid">
@@ -99,7 +79,7 @@
                 </div>
             </div>
             {% else %}
-            <p style="color:var(--text-muted); padding:1rem 0;">No payment record linked to this booking.</p>
+            <p style="color:var(--text-muted); padding:1.5rem;">No payment record linked to this booking.</p>
             {% endif %}
         </div>
 
@@ -111,53 +91,53 @@
         <!-- Dates -->
         <div class="card" style="margin-bottom:0;">
             <div class="card-header"><h3 class="card-title">Reservation Dates</h3></div>
-            <div class="detail-row"><span class="detail-label">Start Date</span><span class="detail-value">{{ booking.start_date }}</span></div>
-            <div class="detail-row"><span class="detail-label">End Date</span><span class="detail-value">{{ booking.end_date }}</span></div>
-            <div style="margin-top:1.25rem; background:rgba(245,166,35,0.08); border:1px solid rgba(245,166,35,0.2); border-radius:var(--radius); padding:1.25rem; text-align:center;">
-                <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:0.4rem;">Duration</div>
-                <div style="font-size:2.5rem; font-weight:900; color:var(--primary); line-height:1;">{{ booking.rental_days }}</div>
-                <div style="color:var(--text-muted); font-size:0.85rem;">days</div>
+            <div style="padding: 1.5rem;">
+                <div class="detail-row"><span class="detail-label">Start Date</span><span class="detail-value">{{ booking.start_date }}</span></div>
+                <div class="detail-row"><span class="detail-label">End Date</span><span class="detail-value">{{ booking.end_date }}</span></div>
+                <div style="margin-top:1.25rem; background:#fff5f7; border:1px solid #fed7e2; border-radius:var(--radius); padding:1.25rem; text-align:center;">
+                    <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:0.4rem; font-weight:700;">Duration</div>
+                    <div style="font-size:2.5rem; font-weight:800; color:var(--primary); line-height:1;">{{ booking.rental_days }}</div>
+                    <div style="color:var(--text-muted); font-size:0.85rem; font-weight:600;">days</div>
+                </div>
             </div>
         </div>
 
         <!-- Admin Action Panel -->
         {% if booking.booking_status == 'PENDING' %}
-        <div class="card" style="margin-bottom:0; border-color:rgba(245,166,35,0.3);">
+        <div class="card" style="margin-bottom:0; border-color:var(--primary);">
             <div class="card-header"><h3 class="card-title" style="color:var(--primary);">Admin Actions</h3></div>
 
-            <form method="POST" action="{{ url_for('admin.approve_booking', booking_id=booking.booking_id) }}" style="margin-bottom:1.25rem;">
-                <div class="form-group">
-                    <label class="form-label" for="admin_notes_approve">Approval Notes (Optional)</label>
-                    <textarea id="admin_notes_approve" name="admin_notes" class="form-control" rows="2" placeholder="Add any notes..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-success" style="width:100%;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="20,6 9,17 4,12"/>
-                    </svg>
-                    Approve Booking
-                </button>
-            </form>
+            <div style="padding: 1.5rem;">
+                <form method="POST" action="{{ url_for('admin.approve_booking', booking_id=booking.booking_id) }}" style="margin-bottom:1.25rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="admin_notes_approve">Approval Notes (Optional)</label>
+                        <textarea id="admin_notes_approve" name="admin_notes" class="form-control" rows="2" placeholder="Add any notes..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="width:100%;">
+                        Approve Booking
+                    </button>
+                </form>
 
-            <hr style="border:0; border-top:1px solid var(--border-glass); margin:0.5rem 0 1.25rem;">
+                <hr style="border:0; border-top:1px solid var(--border-light); margin:1.5rem 0;">
 
-            <form method="POST" action="{{ url_for('admin.reject_booking', booking_id=booking.booking_id) }}"
-                  onsubmit="return confirm('Are you sure you want to reject this booking?');">
-                <div class="form-group">
-                    <label class="form-label" for="admin_notes_reject">Rejection Reason (Required)</label>
-                    <textarea id="admin_notes_reject" name="admin_notes" class="form-control" rows="2" required placeholder="State the reason..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-danger" style="width:100%;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
-                    Reject Booking
-                </button>
-            </form>
+                <form method="POST" action="{{ url_for('admin.reject_booking', booking_id=booking.booking_id) }}"
+                      onsubmit="return confirm('Are you sure you want to reject this booking?');">
+                    <div class="form-group">
+                        <label class="form-label" for="admin_notes_reject">Rejection Reason (Required)</label>
+                        <textarea id="admin_notes_reject" name="admin_notes" class="form-control" rows="2" required placeholder="State the reason..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger" style="width:100%;">
+                        Reject Booking
+                    </button>
+                </form>
+            </div>
         </div>
         {% elif booking.admin_notes %}
         <div class="card" style="margin-bottom:0;">
             <div class="card-header"><h3 class="card-title">Admin Notes</h3></div>
-            <p style="color:var(--text-secondary); font-size:0.92rem; line-height:1.7;">{{ booking.admin_notes }}</p>
+            <div style="padding: 1.5rem;">
+                <p style="color:var(--text-secondary); font-size:0.92rem; line-height:1.7;">{{ booking.admin_notes }}</p>
+            </div>
         </div>
         {% endif %}
 
