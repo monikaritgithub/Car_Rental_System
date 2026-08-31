@@ -40,7 +40,7 @@ def seed_database():
             admin = Admin(
                 employee_id="EMP-001",
                 department="Fleet Management",
-                name="Sarah Mitchell",
+                name="Smriti Bhandari",
                 email="admin@smriticars.com"
             )
             admin.set_password("admin123")

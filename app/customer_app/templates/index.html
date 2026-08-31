@@ -3,35 +3,79 @@
 {% block title %}Smriti Car Rental - Premium Fleet{% endblock %}
 
 {% block content %}
+<!-- Premium Hero Section -->
 <div class="hero">
-    <h1>Experience the Journey</h1>
-    <p>Premium car rental service offering the best vehicles for your next adventure. Fast booking, transparent pricing, and excellent service.</p>
-    <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary" style="font-size: 1.125rem; padding: 0.75rem 2rem;">Explore Our Fleet</a>
+    <div class="hero-content">
+        <h1>Drive Your <span>Dreams</span> Today.</h1>
+        <p>Experience the ultimate premium car rental service. Whether for business or adventure, we provide top-tier vehicles with transparent pricing, zero hidden fees, and impeccable service.</p>
+        <div style="display: flex; gap: 1rem;">
+            <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2.5rem;">Explore Fleet</a>
+            <a href="#features" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.3); font-size: 1.1rem; padding: 0.8rem 2.5rem;">Learn More</a>
+        </div>
+    </div>
+    <div class="hero-image-container">
+        <!-- Using the BMW 3 Series as the flagship hero image -->
+        <img src="{{ url_for('customer.serve_image', filename='bmw-3series.jpg') }}" alt="Premium BMW Car" class="hero-image">
+    </div>
 </div>
 
-<h2 style="text-align: center; margin-bottom: 2rem;">Available Now</h2>
+<!-- Features Section -->
+<div id="features" class="features-grid">
+    <div class="feature-box">
+        <div class="feature-icon">💎</div>
+        <h3>Premium Vehicles</h3>
+        <p style="color: var(--gray); font-size: 0.95rem; margin-top: 0.5rem;">Our fleet consists of well-maintained, latest-model vehicles to ensure maximum comfort and safety.</p>
+    </div>
+    <div class="feature-box">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant Booking</h3>
+        <p style="color: var(--gray); font-size: 0.95rem; margin-top: 0.5rem;">Skip the lines. Our seamless digital booking process gets you on the road in minutes.</p>
+    </div>
+    <div class="feature-box">
+        <div class="feature-icon">🛡️</div>
+        <h3>Fully Insured</h3>
+        <p style="color: var(--gray); font-size: 0.95rem; margin-top: 0.5rem;">Drive with peace of mind. Comprehensive insurance coverage is included with every rental.</p>
+    </div>
+</div>
+
+<h2 class="section-title">Available Right Now</h2>
 
 <div class="car-grid">
     {% for car in cars[:6] %}
     <div class="car-card">
-        {% if car.image %}
-            <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}" alt="{{ car.make }} {{ car.model }}" class="car-img">
-        {% else %}
-            <div class="car-img" style="background: #e5e7eb; display: flex; align-items: center; justify-content: center; color: #9ca3af;">No Image</div>
-        {% endif %}
+        <div class="car-img-wrapper">
+            {% if car.category == 'Luxury' or car.category == 'SUV' %}
+                <div class="car-badge">Popular</div>
+            {% endif %}
+            
+            {% if car.image %}
+                <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}" alt="{{ car.make }} {{ car.model }}" class="car-img">
+            {% else %}
+                <div class="car-img" style="background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">No Image Available</div>
+            {% endif %}
+        </div>
+        
         <div class="car-info">
             <span class="car-category">{{ car.category }}</span>
             <h3 class="car-title">{{ car.year }} {{ car.make }} {{ car.model }}</h3>
-            <div class="car-price">
-                ${{ "%.2f"|format(car.daily_rate) }} <span>/ day</span>
+            
+            <div class="car-specs-mini">
+                <span>🛣️ {{ "%.0f"|format(car.mileage) }} mi</span>
+                <span>⏱️ {{ car.min_rent_period }} Day Min</span>
             </div>
-            <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="btn btn-outline" style="width: 100%;">View Details</a>
+            
+            <div class="car-price-row">
+                <div class="car-price">
+                    ${{ "%.2f"|format(car.daily_rate) }} <span>/ day</span>
+                </div>
+                <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="btn btn-primary">Book Now</a>
+            </div>
         </div>
     </div>
     {% endfor %}
 </div>
 
-<div style="text-align: center; margin-top: 3rem;">
-    <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-secondary">View All Vehicles</a>
+<div style="text-align: center; margin-top: 4rem; margin-bottom: 2rem;">
+    <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-secondary" style="font-size: 1.1rem; padding: 1rem 3rem;">View Entire Fleet Collection</a>
 </div>
 {% endblock %}
