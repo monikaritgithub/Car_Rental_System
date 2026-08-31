@@ -1,65 +1,98 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - Smriti Admin{% endblock %}
+{% block title %}Dashboard — Smriti Admin{% endblock %}
+{% block page_name %}Dashboard Overview{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Dashboard Overview</h1>
+<h1 class="page-title">Good day, <span>{{ session.get('admin_name', 'Admin').split()[0] }}</span></h1>
 
+<!-- STAT CARDS -->
 <div class="stats-grid">
-    <div class="stat-card" style="border-left-color: var(--warning);">
-        <div class="stat-title">Pending Bookings</div>
-        <div class="stat-value">{{ pending_count }}</div>
+    <div class="stat-card" style="--stat-color: linear-gradient(135deg,#fbbf24,#f59e0b); --stat-bg: rgba(251,191,36,0.1); --stat-color-raw: #fbbf24;">
+        <div class="stat-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/>
+            </svg>
+        </div>
+        <div class="stat-body">
+            <div class="stat-title">Pending Bookings</div>
+            <div class="stat-value">{{ pending_count }}</div>
+        </div>
     </div>
-    
-    <div class="stat-card" style="border-left-color: var(--primary);">
-        <div class="stat-title">Fleet Size</div>
-        <div class="stat-value">{{ total_cars }}</div>
+
+    <div class="stat-card" style="--stat-color: linear-gradient(135deg,#f5a623,#f76b1c); --stat-bg: rgba(245,166,35,0.1); --stat-color-raw: #f5a623;">
+        <div class="stat-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+        </div>
+        <div class="stat-body">
+            <div class="stat-title">Fleet Size</div>
+            <div class="stat-value">{{ total_cars }}</div>
+        </div>
     </div>
-    
-    <div class="stat-card" style="border-left-color: var(--success);">
-        <div class="stat-title">Available Cars</div>
-        <div class="stat-value">{{ available_cars }}</div>
+
+    <div class="stat-card" style="--stat-color: linear-gradient(135deg,#00d4aa,#00b894); --stat-bg: rgba(0,212,170,0.1); --stat-color-raw: #00d4aa;">
+        <div class="stat-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20,6 9,17 4,12"/>
+            </svg>
+        </div>
+        <div class="stat-body">
+            <div class="stat-title">Available Cars</div>
+            <div class="stat-value">{{ available_cars }}</div>
+        </div>
     </div>
-    
-    <div class="stat-card" style="border-left-color: #8B5CF6;">
-        <div class="stat-title">Total Customers</div>
-        <div class="stat-value">{{ total_customers }}</div>
+
+    <div class="stat-card" style="--stat-color: linear-gradient(135deg,#667eea,#764ba2); --stat-bg: rgba(102,126,234,0.1); --stat-color-raw: #a5b4fc;">
+        <div class="stat-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+        </div>
+        <div class="stat-body">
+            <div class="stat-title">Total Customers</div>
+            <div class="stat-value">{{ total_customers }}</div>
+        </div>
     </div>
 </div>
 
+<!-- RECENT BOOKINGS TABLE -->
 <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h2 style="font-size: 1.125rem;">Recent Reservations</h2>
+    <div class="card-header">
+        <h2 class="card-title">Recent Reservations</h2>
         <a href="{{ url_for('admin.bookings') }}" class="btn btn-outline btn-sm">View All</a>
     </div>
-    
+
     <div class="table-responsive">
         <table>
             <thead>
                 <tr>
                     <th>Ref ID</th>
                     <th>Customer</th>
+                    <th>Vehicle</th>
                     <th>Dates</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for booking in recent_bookings %}
                 <tr>
-                    <td><strong>{{ booking.booking_id }}</strong></td>
+                    <td><strong style="color:var(--primary);">{{ booking.booking_id }}</strong></td>
                     <td>{{ booking.customer.name }}</td>
-                    <td>{{ booking.start_date }} to {{ booking.end_date }}</td>
-                    <td>
-                        <span class="badge badge-{{ booking.booking_status|lower }}">{{ booking.booking_status }}</span>
+                    <td>{{ booking.car.make }} {{ booking.car.model }}</td>
+                    <td style="color:var(--text-secondary); font-size:0.85rem;">
+                        {{ booking.start_date }} &rarr; {{ booking.end_date }}
                     </td>
+                    <td><span class="badge badge-{{ booking.booking_status|lower }}">{{ booking.booking_status }}</span></td>
                     <td>
                         <a href="{{ url_for('admin.booking_detail', booking_id=booking.booking_id) }}" class="btn btn-primary btn-sm">Review</a>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="5" style="text-align: center; color: var(--gray);">No recent bookings found.</td>
+                    <td colspan="6" style="text-align:center; color:var(--text-muted); padding:3rem;">No recent bookings found.</td>
                 </tr>
                 {% endfor %}
             </tbody>

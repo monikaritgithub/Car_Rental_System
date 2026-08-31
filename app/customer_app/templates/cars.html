@@ -6,71 +6,73 @@
 
 <div class="page-header">
     <h1 class="section-title">Our <span>Fleet</span></h1>
-    <p style="color:var(--text-muted); margin-top:0.5rem;">
-        Browse our full collection of {{ cars|length }} premium vehicles
-    </p>
+    <p style="color:var(--text-muted); margin-top:0.5rem;">Browse our full collection of {{ cars|length }} premium vehicles</p>
 </div>
 
-<!-- Category Filter Bar -->
+<!-- Category Filter -->
 <div class="section-header" style="margin-bottom:2.5rem;">
     <div class="filter-bar">
         <a href="{{ url_for('customer.browse_cars') }}"
-           class="btn {{ 'btn-primary' if not selected_category else 'btn-outline' }}">
-           All
-        </a>
+           class="btn {{ 'btn-primary' if not selected_category else 'btn-outline' }}">All</a>
         {% for cat in categories %}
         <a href="{{ url_for('customer.browse_cars', category=cat) }}"
-           class="btn {{ 'btn-primary' if selected_category == cat else 'btn-outline' }}">
-           {{ cat }}
-        </a>
+           class="btn {{ 'btn-primary' if selected_category == cat else 'btn-outline' }}">{{ cat }}</a>
         {% endfor %}
     </div>
 </div>
 
 {% if not cars %}
-<div style="text-align:center; padding:5rem 2rem; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
-    <span style="font-size:4rem;">🔍</span>
-    <h3 style="margin-top:1rem;">No Vehicles Found</h3>
-    <p style="color:var(--text-muted); margin-top:0.5rem;">Try a different category or check back later.</p>
+<div style="text-align:center; padding:6rem 2rem; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
+    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:1rem;">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <h3 style="margin-bottom:0.5rem;">No Vehicles Found</h3>
+    <p style="color:var(--text-muted);">Try a different category or check back later.</p>
 </div>
 {% else %}
 <div class="car-grid">
     {% for car in cars %}
     <div class="car-card">
         <div class="car-img-wrapper">
-            {% if car.category in ['Luxury'] %}
-                <div class="car-badge">✦ Luxury</div>
+            {% if car.category == 'Luxury' %}
+                <div class="car-badge">Luxury</div>
             {% elif car.category == 'SUV' %}
-                <div class="car-badge">⬆ Popular</div>
+                <div class="car-badge">Popular</div>
             {% endif %}
 
-            <div class="car-avail-badge">● Available</div>
+            <div class="car-avail-badge">Available</div>
 
             {% if car.image %}
                 <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}"
                      alt="{{ car.make }} {{ car.model }}" class="car-img">
             {% else %}
-                <div class="car-img-placeholder">🚗</div>
+                <div class="car-img-placeholder">
+                    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                    </svg>
+                </div>
             {% endif %}
         </div>
 
         <div class="car-info">
             <span class="car-category">{{ car.category }}</span>
             <h3 class="car-title">{{ car.year }} {{ car.make }} {{ car.model }}</h3>
-
             <div class="car-specs-mini">
-                <span class="spec-tag">🛣️ {{ "%.0f"|format(car.mileage) }} km</span>
-                <span class="spec-tag">📅 {{ car.min_rent_period }}–{{ car.max_rent_period }}d</span>
+                <span class="spec-tag">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                    {{ car.min_rent_period }}d &mdash; {{ car.max_rent_period }}d
+                </span>
+                <span class="spec-tag">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><path d="M8 5l-5 7 5 7"/><path d="M16 5l5 7-5 7"/></svg>
+                    {{ "%.0f"|format(car.mileage) }} km
+                </span>
             </div>
-
             <div class="car-price-row">
                 <div class="car-price">
                     ${{ "%.0f"|format(car.daily_rate) }}
                     <span class="per-day">per day</span>
                 </div>
-                <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="btn btn-primary">
-                    Book
-                </a>
+                <a href="{{ url_for('customer.car_detail', car_id=car.car_id) }}" class="btn btn-primary">Book</a>
             </div>
         </div>
     </div>

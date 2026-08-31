@@ -1,34 +1,44 @@
 {% extends "base.html" %}
 
-{% block title %}Admin Login - Smriti Car Rental{% endblock %}
+{% block title %}Admin Login — Smriti Car Rental{% endblock %}
 
 {% block login_content %}
 <div class="login-page">
     <div class="login-card">
-        <h2 style="text-align: center; margin-bottom: 2rem;">Admin Portal</h2>
-        
+        <div class="login-logo">
+            <div style="display:flex; justify-content:center; margin-bottom:1rem;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                </svg>
+            </div>
+            <div class="login-logo-text">Smriti Admin</div>
+            <div class="login-subtitle">Secure Administrator Portal</div>
+        </div>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        
+
         <form method="POST" action="{{ url_for('admin.login') }}">
             <div class="form-group">
                 <label class="form-label" for="email">Employee Email</label>
-                <input type="email" id="email" name="email" class="form-control" required autofocus>
+                <input type="email" id="email" name="email" class="form-control"
+                       placeholder="admin@smriticars.com" required autofocus>
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="password">Password</label>
-                <input type="password" id="password" name="password" class="form-control" required>
+                <input type="password" id="password" name="password" class="form-control"
+                       placeholder="••••••••" required>
             </div>
-            
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.75rem;">Secure Login</button>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1.25rem; padding:0.9rem; font-size:1rem;">
+                Sign In Securely
+            </button>
         </form>
     </div>
 </div>

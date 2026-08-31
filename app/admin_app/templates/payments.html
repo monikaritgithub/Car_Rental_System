@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Payments - Smriti Admin{% endblock %}
+{% block title %}Payments — Smriti Admin{% endblock %}
+{% block page_name %}Payment Records{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-    <h1 class="page-title" style="margin: 0;">Payment Records</h1>
-</div>
+<h1 class="page-title">Payment <span>Records</span></h1>
 
 <div class="card">
     <div class="table-responsive">
@@ -13,26 +12,33 @@
             <thead>
                 <tr>
                     <th>Payment ID</th>
-                    <th>Date & Time</th>
+                    <th>Date</th>
                     <th>Booking Ref</th>
+                    <th>Customer</th>
                     <th>Amount</th>
-                    <th>Gateway Status</th>
-                    <th>Admin Confirmed</th>
+                    <th>Gateway</th>
+                    <th>Confirmed</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for payment in payments %}
                 <tr>
-                    <td><strong>{{ payment.payment_id }}</strong></td>
-                    <td>{{ payment.payment_date.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td><a href="{{ url_for('admin.booking_detail', booking_id=payment.booking.booking_id) }}">{{ payment.booking.booking_id }}</a></td>
-                    <td style="font-weight: 700;">${{ "%.2f"|format(payment.amount) }}</td>
+                    <td><strong style="color:var(--primary);">{{ payment.payment_id }}</strong></td>
+                    <td style="color:var(--text-muted); font-size:0.85rem;">{{ payment.payment_date.strftime('%d %b %Y') }}</td>
                     <td>
-                        <span class="badge badge-{{ payment.payment_status|lower }}">{{ payment.payment_status }}</span>
+                        <a href="{{ url_for('admin.booking_detail', booking_id=payment.booking.booking_id) }}"
+                           style="color:var(--primary); font-weight:600;">
+                            {{ payment.booking.booking_id }}
+                        </a>
                     </td>
+                    <td style="font-size:0.88rem;">{{ payment.booking.customer.name }}</td>
+                    <td style="font-weight:800; font-size:1.05rem; color:var(--success);">${{ "%.2f"|format(payment.amount) }}</td>
+                    <td><span class="badge badge-{{ payment.payment_status|lower }}">{{ payment.payment_status }}</span></td>
                     <td>
-                        <span class="badge badge-{{ payment.confirmed_by_admin|lower }}">{{ "Confirmed" if payment.confirmed_by_admin else "Pending" }}</span>
+                        <span class="badge badge-{{ payment.confirmed_by_admin|lower }}">
+                            {{ "Confirmed" if payment.confirmed_by_admin else "Pending" }}
+                        </span>
                     </td>
                     <td>
                         {% if payment.payment_status == 'COMPLETED' and not payment.confirmed_by_admin %}
@@ -40,13 +46,13 @@
                             <button type="submit" class="btn btn-primary btn-sm">Confirm</button>
                         </form>
                         {% else %}
-                        <span style="color: var(--gray); font-size: 0.875rem;">-</span>
+                        <span style="color:var(--text-muted); font-size:0.85rem;">Done</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 3rem; color: var(--gray);">No payment records found.</td>
+                    <td colspan="8" style="text-align:center; padding:4rem; color:var(--text-muted);">No payment records found.</td>
                 </tr>
                 {% endfor %}
             </tbody>

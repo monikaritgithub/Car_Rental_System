@@ -1,11 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Fleet Management - Smriti Admin{% endblock %}
+{% block title %}Fleet Management — Smriti Admin{% endblock %}
+{% block page_name %}Fleet Management{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-    <h1 class="page-title" style="margin: 0;">Fleet Management</h1>
-    <a href="{{ url_for('admin.add_car') }}" class="btn btn-primary">+ Add New Car</a>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+    <h1 class="page-title" style="margin:0;">Fleet <span>Management</span></h1>
+    <a href="{{ url_for('admin.add_car') }}" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add New Vehicle
+    </a>
 </div>
 
 <div class="card">
@@ -13,9 +19,11 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID / Image</th>
-                    <th>Vehicle Details</th>
-                    <th>Rates & Limits</th>
+                    <th>Image</th>
+                    <th>Vehicle</th>
+                    <th>Category</th>
+                    <th>Daily Rate</th>
+                    <th>Rental Period</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -23,31 +31,36 @@
             <tbody>
                 {% for car in cars %}
                 <tr>
-                    <td style="width: 100px;">
-                        <div style="font-weight: 700; margin-bottom: 0.5rem; font-size: 0.875rem;">{{ car.car_id }}</div>
+                    <td>
                         {% if car.image %}
-                            <img src="{{ url_for('admin.serve_image', filename=car.image.split('/')[-1]) }}" alt="{{ car.make }}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;">
+                            <img src="{{ url_for('admin.serve_image', filename=car.image.split('/')[-1]) }}"
+                                 alt="{{ car.make }}"
+                                 style="width:90px; height:58px; object-fit:cover; border-radius:var(--radius-sm); border:1px solid var(--border-glass);">
                         {% else %}
-                            <div style="width: 80px; height: 50px; background: #E5E7EB; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: #9CA3AF;">No Img</div>
+                            <div style="width:90px; height:58px; background:var(--bg-glass); border-radius:var(--radius-sm); border:1px solid var(--border-glass); display:flex; align-items:center; justify-content:center;">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                                </svg>
+                            </div>
                         {% endif %}
                     </td>
                     <td>
-                        <div style="font-weight: 600;">{{ car.year }} {{ car.make }} {{ car.model }}</div>
-                        <div style="font-size: 0.875rem; color: var(--gray);">Cat: {{ car.category }}</div>
-                        <div style="font-size: 0.875rem; color: var(--gray);">Miles: {{ car.mileage }}</div>
+                        <div style="font-weight:700; color:var(--text-primary);">{{ car.year }} {{ car.make }} {{ car.model }}</div>
+                        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:0.2rem;">ID: {{ car.car_id }}</div>
+                    </td>
+                    <td><span class="badge" style="background:rgba(245,166,35,0.1); color:var(--primary); border:1px solid rgba(245,166,35,0.25);">{{ car.category }}</span></td>
+                    <td style="font-weight:800; font-size:1.05rem; color:var(--text-primary);">${{ "%.2f"|format(car.daily_rate) }}<span style="font-size:0.75rem; color:var(--text-muted); font-weight:400;">/day</span></td>
+                    <td style="color:var(--text-secondary); font-size:0.88rem;">{{ car.min_rent_period }}d min &mdash; {{ car.max_rent_period }}d max</td>
+                    <td>
+                        <span class="badge badge-{{ car.available_now|lower }}">
+                            {{ "Available" if car.available_now else "Unavailable" }}
+                        </span>
                     </td>
                     <td>
-                        <div style="font-weight: 700; color: var(--dark);">${{ "%.2f"|format(car.daily_rate) }}/day</div>
-                        <div style="font-size: 0.875rem; color: var(--gray);">Min: {{ car.min_rent_period }}d | Max: {{ car.max_rent_period }}d</div>
-                    </td>
-                    <td>
-                        <span class="badge badge-{{ car.available_now|lower }}">{{ "Available" if car.available_now else "Unavailable" }}</span>
-                    </td>
-                    <td>
-                        <div style="display: flex; gap: 0.5rem;">
+                        <div style="display:flex; gap:0.5rem;">
                             <a href="{{ url_for('admin.edit_car', car_id=car.car_id) }}" class="btn btn-outline btn-sm">Edit</a>
-                            
-                            <form method="POST" action="{{ url_for('admin.delete_car', car_id=car.car_id) }}" onsubmit="return confirm('WARNING: Are you sure you want to remove {{ car.car_id }} from the fleet? This action cannot be undone.');">
+                            <form method="POST" action="{{ url_for('admin.delete_car', car_id=car.car_id) }}"
+                                  onsubmit="return confirm('Remove {{ car.car_id }} from the fleet? This cannot be undone.');">
                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                             </form>
                         </div>
@@ -55,7 +68,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="5" style="text-align: center; padding: 3rem; color: var(--gray);">No cars in the fleet. Click "Add New Car" to create one.</td>
+                    <td colspan="7" style="text-align:center; padding:4rem; color:var(--text-muted);">No vehicles in fleet. Add your first car above.</td>
                 </tr>
                 {% endfor %}
             </tbody>

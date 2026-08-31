@@ -4,35 +4,30 @@
 
 {% block content %}
 
-<!-- ────────────────────────────────────────
-     FULL-BLEED HERO — BMW 3 Series hero BG
-──────────────────────────────────────────── -->
+<!-- FULL-BLEED HERO -->
 <div class="hero">
-    <!-- Background Car Image -->
-    <div class="hero-bg"
-         style="background-image: url('{{ url_for('customer.serve_image', filename='bmw-3series.jpg') }}');">
-    </div>
-    <!-- Dark gradient overlay -->
+    <div class="hero-bg" style="background-image: url('{{ url_for('customer.serve_image', filename='bmw-3series.jpg') }}');"></div>
     <div class="hero-overlay"></div>
 
-    <!-- Content -->
     <div class="hero-content">
-        <div class="hero-tag">✦ New Zealand's #1 Premium Rental</div>
+        <div class="hero-tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9"/></svg>
+            New Zealand's Premium Rental
+        </div>
 
-        <h1>
-            Drive Your<br>
-            <span class="gradient-text">Dreams Today.</span>
-        </h1>
+        <h1>Drive Your<br><span class="gradient-text">Dreams Today.</span></h1>
 
         <p>
             Choose from our exclusive fleet of meticulously maintained vehicles.
-            From city sedans to rugged off-road trucks — we have the perfect car
-            for every journey.
+            From city sedans to rugged off-road trucks — we have the perfect car for every journey.
         </p>
 
         <div class="hero-cta">
             <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary" style="font-size:1.05rem; padding:0.9rem 2.5rem;">
-                🚗 Browse Fleet
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                </svg>
+                Browse Fleet
             </a>
             {% if not session.get('customer_id') %}
             <a href="{{ url_for('customer.register') }}" class="btn btn-secondary" style="font-size:1.05rem; padding:0.9rem 2.5rem;">
@@ -49,7 +44,7 @@
             <div class="hero-stat-label">Vehicles</div>
         </div>
         <div class="hero-stat">
-            <div class="hero-stat-num">5★</div>
+            <div class="hero-stat-num">5.0</div>
             <div class="hero-stat-label">Rating</div>
         </div>
         <div class="hero-stat">
@@ -59,70 +54,89 @@
     </div>
 </div>
 
-<!-- ────────────────────────────────────────
-     FEATURE HIGHLIGHTS
-──────────────────────────────────────────── -->
+<!-- FEATURE HIGHLIGHTS -->
 <div class="features-grid">
     <div class="feature-box">
-        <span class="feature-icon">💎</span>
+        <span class="feature-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+        </span>
         <h3>Premium Fleet</h3>
         <p>Latest model vehicles, zero compromise on quality or safety.</p>
     </div>
     <div class="feature-box">
-        <span class="feature-icon">⚡</span>
+        <span class="feature-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/>
+            </svg>
+        </span>
         <h3>Instant Booking</h3>
         <p>Book in under 2 minutes. Our seamless process gets you on the road fast.</p>
     </div>
     <div class="feature-box">
-        <span class="feature-icon">🛡️</span>
+        <span class="feature-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+        </span>
         <h3>Fully Insured</h3>
         <p>Every rental includes comprehensive coverage for your peace of mind.</p>
     </div>
     <div class="feature-box">
-        <span class="feature-icon">💳</span>
+        <span class="feature-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+            </svg>
+        </span>
         <h3>Transparent Pricing</h3>
-        <p>Zero hidden fees. What you see is exactly what you pay — guaranteed.</p>
+        <p>Zero hidden fees. What you see is exactly what you pay, guaranteed.</p>
     </div>
 </div>
 
-<!-- ────────────────────────────────────────
-     CAR FLEET GRID
-──────────────────────────────────────────── -->
+<!-- FLEET GRID -->
 <div class="section-header">
     <h2 class="section-title">Available <span>Right Now</span></h2>
-    <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-outline">View All →</a>
+    <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-outline">View All</a>
 </div>
 
 <div class="car-grid">
     {% for car in cars[:6] %}
     <div class="car-card">
         <div class="car-img-wrapper">
-            {% if car.category in ['Luxury', 'SUV'] %}
-                <div class="car-badge">
-                    {% if car.category == 'Luxury' %}✦ Luxury{% else %}⬆ Popular{% endif %}
-                </div>
+            {% if car.category == 'Luxury' %}
+                <div class="car-badge">Luxury</div>
+            {% elif car.category == 'SUV' %}
+                <div class="car-badge">Popular</div>
             {% endif %}
 
-            <div class="car-avail-badge">● Available</div>
+            <div class="car-avail-badge">Available</div>
 
             {% if car.image %}
                 <img src="{{ url_for('customer.serve_image', filename=car.image.split('/')[-1]) }}"
                      alt="{{ car.make }} {{ car.model }}" class="car-img">
             {% else %}
-                <div class="car-img-placeholder">🚗</div>
+                <div class="car-img-placeholder">
+                    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                    </svg>
+                </div>
             {% endif %}
         </div>
 
         <div class="car-info">
             <span class="car-category">{{ car.category }}</span>
             <h3 class="car-title">{{ car.year }} {{ car.make }} {{ car.model }}</h3>
-
             <div class="car-specs-mini">
-                <span class="spec-tag">🛣️ {{ "%.0f"|format(car.mileage) }} km</span>
-                <span class="spec-tag">📅 {{ car.min_rent_period }}d min</span>
-                <span class="spec-tag">📅 {{ car.max_rent_period }}d max</span>
+                <span class="spec-tag">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                    {{ car.min_rent_period }}d min
+                </span>
+                <span class="spec-tag">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><path d="M8 5l-5 7 5 7"/><path d="M16 5l5 7-5 7"/></svg>
+                    {{ "%.0f"|format(car.mileage) }} km
+                </span>
             </div>
-
             <div class="car-price-row">
                 <div class="car-price">
                     ${{ "%.0f"|format(car.daily_rate) }}
@@ -137,7 +151,7 @@
 
 <div style="text-align:center; margin-top:4rem; padding-bottom:2rem;">
     <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary" style="font-size:1.05rem; padding:1rem 3rem;">
-        Explore Full Fleet Collection →
+        Explore Full Fleet Collection
     </a>
 </div>
 

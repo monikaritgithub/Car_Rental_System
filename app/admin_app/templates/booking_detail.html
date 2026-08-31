@@ -1,163 +1,166 @@
 {% extends "base.html" %}
 
-{% block title %}Booking {{ booking.booking_id }} - Smriti Admin{% endblock %}
+{% block title %}Booking {{ booking.booking_id }} — Smriti Admin{% endblock %}
+{% block page_name %}Booking Detail{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
     <div>
-        <a href="{{ url_for('admin.bookings') }}" style="display: inline-block; margin-bottom: 0.5rem; font-size: 0.875rem;">&larr; Back to Bookings</a>
-        <h1 class="page-title" style="margin: 0;">Booking Details</h1>
+        <a href="{{ url_for('admin.bookings') }}" style="display:inline-flex; align-items:center; gap:0.4rem; color:var(--text-muted); font-size:0.88rem; margin-bottom:0.75rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15,18 9,12 15,6"/>
+            </svg>
+            Back to Reservations
+        </a>
+        <h1 class="page-title" style="margin:0;">Booking <span>{{ booking.booking_id }}</span></h1>
     </div>
-    
-    <span class="badge badge-{{ booking.booking_status|lower }}" style="font-size: 1rem; padding: 0.5rem 1rem;">
+    <span class="badge badge-{{ booking.booking_status|lower }}" style="font-size:0.85rem; padding:0.5rem 1.25rem;">
         {{ booking.booking_status }}
     </span>
 </div>
 
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
-    <!-- Left Column: Details -->
-    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-        
-        <!-- Customer Info -->
-        <div class="card" style="margin-bottom: 0;">
-            <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Customer Information</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div style="display:grid; grid-template-columns:2fr 1fr; gap:1.5rem;">
+
+    <!-- LEFT: Detail cards -->
+    <div style="display:flex; flex-direction:column; gap:1.5rem;">
+
+        <!-- Customer -->
+        <div class="card" style="margin-bottom:0;">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:0.4rem;">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    Customer Information
+                </h3>
+            </div>
+            <div class="detail-grid">
                 <div>
-                    <div style="font-size: 0.875rem; color: var(--gray);">Name</div>
-                    <div style="font-weight: 500;">{{ booking.customer.name }}</div>
+                    <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value">{{ booking.customer.name }}</span></div>
+                    <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">{{ booking.customer.email }}</span></div>
                 </div>
                 <div>
-                    <div style="font-size: 0.875rem; color: var(--gray);">Email</div>
-                    <div style="font-weight: 500;">{{ booking.customer.email }}</div>
-                </div>
-                <div>
-                    <div style="font-size: 0.875rem; color: var(--gray);">Phone</div>
-                    <div style="font-weight: 500;">{{ booking.customer.phone_no }}</div>
-                </div>
-                <div>
-                    <div style="font-size: 0.875rem; color: var(--gray);">License ID</div>
-                    <div style="font-weight: 500;">{{ booking.customer.license_id_no }}</div>
+                    <div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value">{{ booking.customer.phone_no }}</span></div>
+                    <div class="detail-row"><span class="detail-label">License ID</span><span class="detail-value">{{ booking.customer.license_id_no }}</span></div>
                 </div>
             </div>
         </div>
-        
-        <!-- Vehicle Info -->
-        <div class="card" style="margin-bottom: 0;">
-            <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Vehicle Information</h3>
-            <div style="display: flex; gap: 1.5rem; align-items: center;">
+
+        <!-- Vehicle -->
+        <div class="card" style="margin-bottom:0;">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:0.4rem;">
+                        <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                    </svg>
+                    Vehicle Information
+                </h3>
+            </div>
+            <div style="display:flex; gap:1.5rem; align-items:flex-start;">
                 {% if booking.car.image %}
-                    <img src="{{ url_for('admin.serve_image', filename=booking.car.image.split('/')[-1]) }}" alt="Car" style="width: 150px; height: 100px; object-fit: cover; border-radius: var(--radius);">
+                    <img src="{{ url_for('admin.serve_image', filename=booking.car.image.split('/')[-1]) }}"
+                         alt="{{ booking.car.make }}"
+                         style="width:160px; height:105px; object-fit:cover; border-radius:var(--radius); border:1px solid var(--border-glass); flex-shrink:0;">
                 {% else %}
-                    <div style="width: 150px; height: 100px; background: #E5E7EB; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: #9CA3AF;">No Image</div>
+                    <div style="width:160px; height:105px; background:var(--bg-glass); border-radius:var(--radius); border:1px solid var(--border-glass); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                        </svg>
+                    </div>
                 {% endif %}
-                
-                <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div>
-                        <div style="font-size: 0.875rem; color: var(--gray);">Vehicle</div>
-                        <div style="font-weight: 600;">{{ booking.car.year }} {{ booking.car.make }} {{ booking.car.model }}</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.875rem; color: var(--gray);">Car ID</div>
-                        <div style="font-weight: 500;">{{ booking.car.car_id }}</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.875rem; color: var(--gray);">Current Status</div>
-                        <div style="font-weight: 500;">
-                            <span class="badge badge-{{ booking.car.available_now|lower }}">{{ "Available" if booking.car.available_now else "Unavailable" }}</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.875rem; color: var(--gray);">Daily Rate</div>
-                        <div style="font-weight: 500;">${{ "%.2f"|format(booking.car.daily_rate) }}</div>
-                    </div>
+                <div style="flex:1;">
+                    <div class="detail-row"><span class="detail-label">Vehicle</span><span class="detail-value">{{ booking.car.year }} {{ booking.car.make }} {{ booking.car.model }}</span></div>
+                    <div class="detail-row"><span class="detail-label">Car ID</span><span class="detail-value">{{ booking.car.car_id }}</span></div>
+                    <div class="detail-row"><span class="detail-label">Daily Rate</span><span class="detail-value" style="color:var(--primary);">${{ "%.2f"|format(booking.car.daily_rate) }}</span></div>
+                    <div class="detail-row"><span class="detail-label">Car Status</span><span><span class="badge badge-{{ booking.car.available_now|lower }}">{{ "Available" if booking.car.available_now else "Unavailable" }}</span></span></div>
                 </div>
             </div>
         </div>
-        
-        <!-- Payment Info -->
-        <div class="card" style="margin-bottom: 0;">
-            <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Payment Record</h3>
+
+        <!-- Payment -->
+        <div class="card" style="margin-bottom:0;">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:0.4rem;">
+                        <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+                    </svg>
+                    Payment Record
+                </h3>
+            </div>
             {% if booking.payment %}
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="detail-grid">
                 <div>
-                    <div style="font-size: 0.875rem; color: var(--gray);">Payment ID</div>
-                    <div style="font-weight: 500;">{{ booking.payment.payment_id }}</div>
+                    <div class="detail-row"><span class="detail-label">Payment ID</span><span class="detail-value">{{ booking.payment.payment_id }}</span></div>
+                    <div class="detail-row"><span class="detail-label">Amount Paid</span><span class="detail-value" style="color:var(--success); font-size:1.2rem;">${{ "%.2f"|format(booking.payment.amount) }}</span></div>
                 </div>
                 <div>
-                    <div style="font-size: 0.875rem; color: var(--gray);">Amount Paid</div>
-                    <div style="font-weight: 700; color: var(--primary);">${{ "%.2f"|format(booking.payment.amount) }}</div>
-                </div>
-                <div>
-                    <div style="font-size: 0.875rem; color: var(--gray);">Gateway Status</div>
-                    <div style="font-weight: 500;">
-                        <span class="badge badge-{{ booking.payment.payment_status|lower }}">{{ booking.payment.payment_status }}</span>
-                    </div>
-                </div>
-                <div>
-                    <div style="font-size: 0.875rem; color: var(--gray);">Admin Confirmed</div>
-                    <div style="font-weight: 500;">
-                        <span class="badge badge-{{ booking.payment.confirmed_by_admin|lower }}">{{ "Yes" if booking.payment.confirmed_by_admin else "No" }}</span>
-                    </div>
+                    <div class="detail-row"><span class="detail-label">Gateway Status</span><span><span class="badge badge-{{ booking.payment.payment_status|lower }}">{{ booking.payment.payment_status }}</span></span></div>
+                    <div class="detail-row"><span class="detail-label">Admin Confirmed</span><span><span class="badge badge-{{ booking.payment.confirmed_by_admin|lower }}">{{ "Yes" if booking.payment.confirmed_by_admin else "No" }}</span></span></div>
                 </div>
             </div>
             {% else %}
-            <p style="color: var(--gray);">No payment record found for this booking.</p>
+            <p style="color:var(--text-muted); padding:1rem 0;">No payment record linked to this booking.</p>
             {% endif %}
         </div>
-        
+
     </div>
-    
-    <!-- Right Column: Action Panel -->
-    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-        
-        <div class="card" style="margin-bottom: 0;">
-            <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Reservation Dates</h3>
-            
-            <div style="margin-bottom: 1rem;">
-                <div style="font-size: 0.875rem; color: var(--gray);">Start Date</div>
-                <div style="font-weight: 600; font-size: 1.125rem;">{{ booking.start_date }}</div>
-            </div>
-            
-            <div style="margin-bottom: 1.5rem;">
-                <div style="font-size: 0.875rem; color: var(--gray);">End Date</div>
-                <div style="font-weight: 600; font-size: 1.125rem;">{{ booking.end_date }}</div>
-            </div>
-            
-            <div style="padding: 1rem; background: #F3F4F6; border-radius: var(--radius); text-align: center;">
-                <div style="font-size: 0.875rem; color: var(--gray);">Duration</div>
-                <div style="font-weight: 700; font-size: 1.5rem;">{{ booking.rental_days }} Days</div>
+
+    <!-- RIGHT: Dates + Action Panel -->
+    <div style="display:flex; flex-direction:column; gap:1.5rem;">
+
+        <!-- Dates -->
+        <div class="card" style="margin-bottom:0;">
+            <div class="card-header"><h3 class="card-title">Reservation Dates</h3></div>
+            <div class="detail-row"><span class="detail-label">Start Date</span><span class="detail-value">{{ booking.start_date }}</span></div>
+            <div class="detail-row"><span class="detail-label">End Date</span><span class="detail-value">{{ booking.end_date }}</span></div>
+            <div style="margin-top:1.25rem; background:rgba(245,166,35,0.08); border:1px solid rgba(245,166,35,0.2); border-radius:var(--radius); padding:1.25rem; text-align:center;">
+                <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:0.4rem;">Duration</div>
+                <div style="font-size:2.5rem; font-weight:900; color:var(--primary); line-height:1;">{{ booking.rental_days }}</div>
+                <div style="color:var(--text-muted); font-size:0.85rem;">days</div>
             </div>
         </div>
-        
+
+        <!-- Admin Action Panel -->
         {% if booking.booking_status == 'PENDING' %}
-        <div class="card" style="margin-bottom: 0; border: 2px solid var(--primary);">
-            <h3 style="margin-bottom: 1rem;">Admin Actions</h3>
-            
-            <form method="POST" action="{{ url_for('admin.approve_booking', booking_id=booking.booking_id) }}" style="margin-bottom: 1rem;">
+        <div class="card" style="margin-bottom:0; border-color:rgba(245,166,35,0.3);">
+            <div class="card-header"><h3 class="card-title" style="color:var(--primary);">Admin Actions</h3></div>
+
+            <form method="POST" action="{{ url_for('admin.approve_booking', booking_id=booking.booking_id) }}" style="margin-bottom:1.25rem;">
                 <div class="form-group">
                     <label class="form-label" for="admin_notes_approve">Approval Notes (Optional)</label>
-                    <textarea id="admin_notes_approve" name="admin_notes" class="form-control" rows="2"></textarea>
+                    <textarea id="admin_notes_approve" name="admin_notes" class="form-control" rows="2" placeholder="Add any notes..."></textarea>
                 </div>
-                <button type="submit" class="btn btn-success" style="width: 100%; font-weight: 600;">Approve & Mark Car Unavailable</button>
+                <button type="submit" class="btn btn-success" style="width:100%;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20,6 9,17 4,12"/>
+                    </svg>
+                    Approve Booking
+                </button>
             </form>
-            
-            <hr style="border: 0; border-top: 1px solid var(--gray-light); margin: 1.5rem 0;">
-            
-            <form method="POST" action="{{ url_for('admin.reject_booking', booking_id=booking.booking_id) }}" onsubmit="return confirm('Are you sure you want to reject this booking?');">
+
+            <hr style="border:0; border-top:1px solid var(--border-glass); margin:0.5rem 0 1.25rem;">
+
+            <form method="POST" action="{{ url_for('admin.reject_booking', booking_id=booking.booking_id) }}"
+                  onsubmit="return confirm('Are you sure you want to reject this booking?');">
                 <div class="form-group">
                     <label class="form-label" for="admin_notes_reject">Rejection Reason (Required)</label>
-                    <textarea id="admin_notes_reject" name="admin_notes" class="form-control" rows="2" required></textarea>
+                    <textarea id="admin_notes_reject" name="admin_notes" class="form-control" rows="2" required placeholder="State the reason..."></textarea>
                 </div>
-                <button type="submit" class="btn btn-danger" style="width: 100%;">Reject Booking</button>
+                <button type="submit" class="btn btn-danger" style="width:100%;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                    Reject Booking
+                </button>
             </form>
         </div>
         {% elif booking.admin_notes %}
-        <div class="card" style="margin-bottom: 0; background: #F9FAFB;">
-            <h3 style="margin-bottom: 0.5rem; font-size: 1rem; color: var(--gray);">Admin Notes</h3>
-            <p style="font-size: 0.875rem;">{{ booking.admin_notes }}</p>
+        <div class="card" style="margin-bottom:0;">
+            <div class="card-header"><h3 class="card-title">Admin Notes</h3></div>
+            <p style="color:var(--text-secondary); font-size:0.92rem; line-height:1.7;">{{ booking.admin_notes }}</p>
         </div>
         {% endif %}
-        
+
     </div>
 </div>
 {% endblock %}
