@@ -8,7 +8,9 @@ Passwords are stored as Werkzeug hashes, never as plain text.
 """
 
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
+
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from database import db
 
 
@@ -38,6 +40,16 @@ class Customer(db.Model):
 
     # One customer can have many bookings
     bookings = db.relationship("Booking", backref="customer", lazy=True)
+
+    def __init__(self, *, name: str, email: str, phone_no: str,
+                 license_id_no: str, address: str = "",
+                 payment_info: str = "") -> None:
+        self.name = name
+        self.email = email
+        self.phone_no = phone_no
+        self.license_id_no = license_id_no
+        self.address = address
+        self.payment_info = payment_info
 
     def set_password(self, plain_password: str) -> None:
         """

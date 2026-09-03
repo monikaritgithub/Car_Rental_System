@@ -1,0 +1,18 @@
+{
+  "include": ["."],
+  "exclude": ["venv", ".venv", "__pycache__"],
+  "venvPath": ".",
+  "venv": "venv",
+  "typeCheckingMode": "standard",
+  "reportMissingModuleSource": false,
+  "reportUnknownMemberType": false,
+  "reportUnknownVariableType": false,
+  "reportUnknownParameterType": false,
+  "reportUnknownArgumentType": false,
+  "reportMissingParameterType": false,
+  "reportAny": false,
+  "reportUnknownLambdaType": false,
+  "reportUnannotatedClassAttribute": false,
+  "reportImplicitStringConcatenation": false,
+  "reportUnusedCallResult": false
+}

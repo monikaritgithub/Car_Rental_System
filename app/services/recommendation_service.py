@@ -11,14 +11,13 @@ It scores available cars based on:
 - Rental duration
 """
 
-from typing import List, Dict, Optional
-from datetime import date
+from typing import Dict, List
 
-from database import db
 from app.models.car import Car
+from database import db
 
 
-def recommend_cars(passengers: int, budget: float, purpose: str, days: int) -> List[Dict]:
+def recommend_cars(passengers: int, budget: float, purpose: str, days: int) -> List[Dict[str, object]]:
     """
     Score and recommend cars based on user inputs.
 

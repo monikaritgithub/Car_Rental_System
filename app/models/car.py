@@ -10,6 +10,7 @@ for example: images/toyota-camry.jpg
 """
 
 from datetime import datetime
+
 from database import db
 
 
@@ -61,6 +62,23 @@ class Car(db.Model):
     # Per-car optional/mandatory extra charges (GPS, insurance, etc.)
     additional_charges = db.relationship("AdditionalCharge", backref="car", lazy=True, cascade="all, delete-orphan")
 
+    def __init__(self, *, car_id: str, make: str, model: str, year: int,
+                 daily_rate: float, mileage: float = 0.0,
+                 available_now: bool = True, min_rent_period: int = 1,
+                 max_rent_period: int = 30, image: str = "",
+                 description: str = "", category: str = "") -> None:
+        self.car_id = car_id
+        self.make = make
+        self.model = model
+        self.year = year
+        self.daily_rate = daily_rate
+        self.mileage = mileage
+        self.available_now = available_now
+        self.min_rent_period = min_rent_period
+        self.max_rent_period = max_rent_period
+        self.image = image
+        self.description = description
+        self.category = category
 
     def update_mileage(self, new_mileage: float) -> None:
         """

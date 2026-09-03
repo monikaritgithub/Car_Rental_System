@@ -13,14 +13,14 @@ Seed data includes:
   - Two sample customers for testing
 """
 
-import sys
 import os
+import sys
 
 # Add the project root to the path so we can import from app/
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.customer_app import create_customer_app
-from app.models import Customer, Admin, Car, Booking, Payment
+from app.models import Admin, Booking, Car, Customer, Payment
 from database import db
 
 
@@ -34,7 +34,7 @@ def seed_database():
         db.create_all()
         print("Database tables created.")
 
-        # ── Admin accounts ──────────────────────────────────────────────────
+        # Admin accounts
 
         if not db.session.query(Admin).first():
             admin = Admin(
@@ -49,7 +49,7 @@ def seed_database():
         else:
             print("Admin accounts already exist, skipping.")
 
-        # ── Sample customers ────────────────────────────────────────────────
+        # Sample customers
 
         if not db.session.query(Customer).first():
             customers = [
@@ -86,7 +86,7 @@ def seed_database():
         else:
             print("Customer accounts already exist, skipping.")
 
-        # ── Car fleet ───────────────────────────────────────────────────────
+        # Car fleet
 
         if not db.session.query(Car).first():
             cars = [

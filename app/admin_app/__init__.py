@@ -6,11 +6,12 @@ which runs on port 5001.
 """
 
 from flask import Flask
+
+from config.settings import Config, DevelopmentConfig
 from database import db
-from config.settings import DevelopmentConfig
 
 
-def create_admin_app(config_class=DevelopmentConfig) -> Flask:
+def create_admin_app(config_class: type[Config] = DevelopmentConfig) -> Flask:
     """
     Build the admin Flask application.
 

@@ -12,8 +12,9 @@ And the Customer use case:
 """
 
 from typing import Optional
-from database import db
+
 from app.models.car import Car
+from database import db
 
 
 def _generate_car_id() -> str:
@@ -29,7 +30,7 @@ def get_available_cars() -> list[Car]:
     This is sequence diagram step 2:
     'UI → DB: Query cars where availableNow = true'
     """
-    return db.session.query(Car).filter_by(available_now=True).order_by(Car.make, Car.model).all()
+    return db.session.query(Car).filter_by(available_now=True).order_by(Car.make, Car.model).all()  # type: ignore[return-value]
 
 
 def get_all_cars() -> list[Car]:
@@ -39,7 +40,7 @@ def get_all_cars() -> list[Car]:
     This is used by the admin interface which needs to see all cars,
     including ones that are currently out on rental.
     """
-    return db.session.query(Car).order_by(Car.make, Car.model).all()
+    return db.session.query(Car).order_by(Car.make, Car.model).all()  # type: ignore[return-value]
 
 
 def get_car_by_id(car_id: str) -> Optional[Car]:
@@ -48,7 +49,7 @@ def get_car_by_id(car_id: str) -> Optional[Car]:
 
     Returns None if not found.
     """
-    return db.session.query(Car).filter_by(car_id=car_id).first()
+    return db.session.query(Car).filter_by(car_id=car_id).first()  # type: ignore[return-value]
 
 
 def get_car_by_pk(pk: int) -> Optional[Car]:
@@ -85,7 +86,7 @@ def add_car(make: str, model: str, year: int, mileage: float,
     return car
 
 
-def update_car(car_id: str, **kwargs) -> tuple[bool, str]:
+def update_car(car_id: str, **kwargs: object) -> tuple[bool, str]:
     """
     Update an existing car's details.
 
@@ -117,17 +118,19 @@ def delete_car(car_id: str) -> tuple[bool, str]:
     We don't allow deletion if the car has any active (PENDING or APPROVED)
     bookings — that would leave customers with a missing reservation.
     """
-    from app.models.booking import Booking, STATUS_PENDING, STATUS_APPROVED
+    from app.models.booking import STATUS_APPROVED, STATUS_PENDING, Booking
 
     car = get_car_by_id(car_id)
     if car is None:
         return False, f"Car with ID {car_id} not found."
 
     # Check for active bookings before deleting
-    active_booking = db.session.query(Booking).filter(
-        Booking.car_id == car.id,
-        Booking.booking_status.in_([STATUS_PENDING, STATUS_APPROVED])
-    ).first()
+    active_booking = (
+        db.session.query(Booking)
+        .filter(Booking.car_id == car.id)  # type: ignore[arg-type]
+        .filter(Booking.booking_status.in_([STATUS_PENDING, STATUS_APPROVED]))  # type: ignore[union-attr]
+        .first()
+    )
 
     if active_booking:
         return False, "This car has active bookings and cannot be deleted."

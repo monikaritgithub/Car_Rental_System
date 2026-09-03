@@ -6,11 +6,12 @@ which runs on port 5000.
 """
 
 from flask import Flask
+
+from config.settings import Config, DevelopmentConfig
 from database import db
-from config.settings import DevelopmentConfig
 
 
-def create_customer_app(config_class=DevelopmentConfig) -> Flask:
+def create_customer_app(config_class: type[Config] = DevelopmentConfig) -> Flask:
     """
     Build the customer Flask application.
 

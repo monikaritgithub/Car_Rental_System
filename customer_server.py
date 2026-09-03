@@ -8,14 +8,14 @@ The database tables are created automatically on first run if they don't
 already exist. This makes it easy to start fresh without a separate setup step.
 """
 
-import sys
 import os
+import sys
 
 # Make sure the project root is on the Python path so imports work correctly
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from app.customer_app import create_customer_app
-from app.models import Customer, Admin, Car, Booking, Payment
+from app.models import Admin, Booking, Car, Customer, Payment
 from database import db
 
 

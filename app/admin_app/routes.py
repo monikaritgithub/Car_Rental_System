@@ -16,22 +16,22 @@ these are two different Flask applications running on different ports.
 """
 
 import os
-from werkzeug.utils import secure_filename
-from flask import (
-    Blueprint, render_template, request, redirect,
-    url_for, session, flash, send_from_directory
-)
-
-from database import db
-from app.models.admin import Admin
-from app.models.booking import Booking, STATUS_PENDING, STATUS_APPROVED
-from app.models.payment import Payment
-from app.models.customer import Customer
-from app.models.car import Car
-from app.models.additional_charge import AdditionalCharge, VALID_CHARGE_TYPES
-from app.services import car_service, booking_engine, payment_service, report_service
-from config.settings import BASE_DIR
 from functools import wraps
+
+from flask import (Blueprint, flash, redirect, render_template, request,
+                   send_from_directory, session, url_for)
+from werkzeug.utils import secure_filename
+
+from app.models.additional_charge import VALID_CHARGE_TYPES, AdditionalCharge
+from app.models.admin import Admin
+from app.models.booking import STATUS_APPROVED, STATUS_PENDING, Booking
+from app.models.car import Car
+from app.models.customer import Customer
+from app.models.payment import Payment
+from app.services import (booking_engine, car_service, payment_service,
+                          report_service)
+from config.settings import BASE_DIR
+from database import db
 
 # Allowed image extensions for car photo uploads
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'webp', 'gif'}
@@ -59,7 +59,7 @@ def _save_car_image(file_storage) -> str:
 admin_bp = Blueprint("admin", __name__)
 
 
-# ─── Helper ────────────────────────────────────────────────────────────────────
+# Helper
 
 def admin_required(f):
     """Redirect to admin login if no admin session is active."""
@@ -72,7 +72,7 @@ def admin_required(f):
     return decorated
 
 
-# ─── Static image serving ──────────────────────────────────────────────────────
+# Static image serving
 
 @admin_bp.route("/images/<path:filename>")
 def serve_image(filename):
@@ -81,7 +81,7 @@ def serve_image(filename):
     return send_from_directory(images_dir, filename)
 
 
-# ─── Authentication ────────────────────────────────────────────────────────────
+# Authentication
 
 @admin_bp.route("/")
 def root():
@@ -122,7 +122,7 @@ def logout():
     return redirect(url_for("admin.login"))
 
 
-# ─── Dashboard ─────────────────────────────────────────────────────────────────
+# Dashboard
 
 @admin_bp.route("/dashboard")
 @admin_required
@@ -155,7 +155,7 @@ def dashboard():
                            recent_bookings=recent_bookings)
 
 
-# ─── Car Management ────────────────────────────────────────────────────────────
+# Car Management
 
 @admin_bp.route("/cars")
 @admin_required
@@ -272,7 +272,7 @@ def delete_car(car_id):
     return redirect(url_for("admin.cars"))
 
 
-# ─── Booking Management ────────────────────────────────────────────────────────
+# Booking Management
 
 @admin_bp.route("/bookings")
 @admin_required
@@ -364,7 +364,7 @@ def cancel_and_refund_booking(booking_id):
     return redirect(url_for("admin.booking_detail", booking_id=booking_id))
 
 
-# ─── Payment Management ────────────────────────────────────────────────────────
+# Payment Management
 
 @admin_bp.route("/payments")
 @admin_required
@@ -388,7 +388,7 @@ def confirm_payment(payment_id):
     return redirect(url_for("admin.payments"))
 
 
-# ─── Additional Charges Management ────────────────────────────────────────────
+# Additional Charges Management
 
 @admin_bp.route("/cars/<car_id>/charges/add", methods=["POST"])
 @admin_required
@@ -453,7 +453,7 @@ def delete_charge(car_id, charge_id):
     return redirect(url_for("admin.edit_car", car_id=car_id))
 
 
-# ─── Report ────────────────────────────────────────────────────────────────────
+# Report
 
 @admin_bp.route("/report")
 @admin_required

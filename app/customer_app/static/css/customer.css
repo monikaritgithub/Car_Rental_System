@@ -39,7 +39,7 @@
   --transition:   all 0.2s ease-in-out;
 }
 
-/* ─── RESET ─── */
+/* Reset */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
@@ -55,7 +55,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.2; color: var(--second
 a { color: var(--primary); text-decoration: none; transition: var(--transition); }
 a:hover { color: var(--primary-hover); }
 
-/* ─── TOP PROMO BAR ─── */
+/* Top Promo Bar */
 .promo-bar {
   background-color: var(--primary);
   color: var(--white);
@@ -69,7 +69,7 @@ a:hover { color: var(--primary-hover); }
   gap: 0.5rem;
 }
 
-/* ─── UTILITY NAV BAR ─── */
+/* Utility Nav Bar */
 .utility-bar {
   background-color: var(--bg-main);
   border-bottom: 1px solid var(--border-light);
@@ -88,7 +88,7 @@ a:hover { color: var(--primary-hover); }
 }
 .utility-bar a:hover { color: var(--primary); }
 
-/* ─── MAIN NAVBAR ─── */
+/* Main Navbar */
 .navbar {
   background: var(--white);
   padding: 1rem 2rem;
@@ -115,7 +115,7 @@ a:hover { color: var(--primary-hover); }
 }
 .nav-links a:hover, .nav-links a.active { color: var(--primary); }
 
-/* ─── BUTTONS ─── */
+/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -137,7 +137,7 @@ a:hover { color: var(--primary-hover); }
 .btn-outline:hover { background: var(--primary); color: var(--white); }
 .btn-danger { background: var(--danger); color: white; }
 
-/* ─── LAYOUT ─── */
+/* Layout */
 .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 2rem; flex: 1; }
 .alerts { margin-bottom: 2rem; }
 .alert { padding: 1rem 1.5rem; border-radius: var(--radius); margin-bottom: 1rem; font-weight: 600; font-size: 0.9rem; border-left: 4px solid; background: var(--white); box-shadow: var(--shadow-sm); }
@@ -146,7 +146,7 @@ a:hover { color: var(--primary-hover); }
 .alert-warning { border-color: var(--warning); color: var(--warning); }
 .alert-info { border-color: var(--secondary); color: var(--secondary); }
 
-/* ─── HERO SECTION ─── */
+/* Hero Section */
 .hero {
   position: relative;
   min-height: 600px;
@@ -164,7 +164,7 @@ a:hover { color: var(--primary-hover); }
 .hero h1 { font-size: 4.5rem; font-weight: 800; color: var(--white); line-height: 1.1; margin-bottom: 1.5rem; }
 .hero p { font-size: 1.5rem; font-weight: 500; margin-bottom: 0.5rem; }
 
-/* ─── BOOKING WIDGET ─── */
+/* Booking Widget */
 .booking-widget {
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(10px);
@@ -199,7 +199,7 @@ a:hover { color: var(--primary-hover); }
 }
 .widget-btn:hover { background: var(--primary-hover); }
 
-/* ─── CAR CARDS (Grid matching GO Rentals) ─── */
+/* Car Cards (Grid matching GO Rentals) */
 .car-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -240,7 +240,7 @@ a:hover { color: var(--primary-hover); }
 .car-footer-left { display: flex; gap: 1rem; align-items: center; }
 .car-footer-right { color: var(--secondary); font-weight: 700; }
 
-/* ─── FORMS ─── */
+/* Forms */
 .form-container {
   background: var(--white);
   padding: 3rem;
@@ -258,7 +258,7 @@ a:hover { color: var(--primary-hover); }
 }
 .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(230,0,80,0.2); }
 
-/* ─── DETAIL PAGE / TABLES ─── */
+/* Detail Page / Tables */
 .table-responsive { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); overflow: hidden; margin-bottom: 2rem; }
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 1rem 1.5rem; text-align: left; border-bottom: 1px solid var(--border-light); }
@@ -269,6 +269,6 @@ td { font-size: 0.95rem; }
 .badge-approved { background: #c6f6d5; color: var(--success); }
 .badge-rejected, .badge-cancelled { background: #fed7d7; color: var(--danger); }
 
-/* ─── FOOTER ─── */
+/* Footer */
 footer { background: var(--secondary); color: var(--white); padding: 2rem; margin-top: auto; text-align: center; font-size: 0.85rem; }
 footer a { color: var(--primary); }

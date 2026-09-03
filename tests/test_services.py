@@ -1,7 +1,9 @@
 from datetime import date, timedelta
+
+from app.models.booking import STATUS_APPROVED, STATUS_PENDING
 from app.services import booking_engine, car_service
-from app.models.booking import STATUS_PENDING, STATUS_APPROVED
 from database import db
+
 
 def test_validate_availability_valid(customer_app, sample_car):
     with customer_app.app_context():

@@ -8,13 +8,13 @@ The customer and admin servers both connect to the same SQLite database
 file (car_rental.db) so they see the same data in real time.
 """
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from app.admin_app import create_admin_app
-from app.models import Customer, Admin, Car, Booking, Payment
+from app.models import Admin, Booking, Car, Customer, Payment
 from database import db
 
 

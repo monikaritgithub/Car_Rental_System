@@ -16,8 +16,8 @@ Design:
 """
 
 from datetime import datetime
-from database import db
 
+from database import db
 
 CHARGE_TYPE_PER_DAY = "per_day"
 CHARGE_TYPE_ONE_TIME = "one_time"
@@ -58,6 +58,16 @@ class AdditionalCharge(db.Model):
     description = db.Column(db.String(200), nullable=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __init__(self, *, car_id: int, name: str, amount: float,
+                 charge_type: str = CHARGE_TYPE_ONE_TIME,
+                 is_mandatory: bool = True, description: str = "") -> None:
+        self.car_id = car_id
+        self.name = name
+        self.amount = amount
+        self.charge_type = charge_type
+        self.is_mandatory = is_mandatory
+        self.description = description
 
     def calculate_for_days(self, rental_days: int) -> float:
         """

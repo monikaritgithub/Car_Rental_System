@@ -12,8 +12,8 @@ The sequence diagram shows the payment flow:
 """
 
 from datetime import datetime
-from database import db
 
+from database import db
 
 # Payment status values
 PAYMENT_PENDING = "PENDING"
@@ -58,6 +58,13 @@ class Payment(db.Model):
     # When admin manually confirms a payment from the admin panel
     confirmed_by_admin = db.Column(db.Boolean, default=False)
     confirmed_at = db.Column(db.DateTime, nullable=True)
+
+    def __init__(self, *, payment_id: str, booking_id: int, amount: float,
+                 payment_status: str = PAYMENT_PENDING) -> None:
+        self.payment_id = payment_id
+        self.booking_id = booking_id
+        self.amount = amount
+        self.payment_status = payment_status
 
     def process_credit_card(self, card_number: str, card_holder: str) -> bool:
         """

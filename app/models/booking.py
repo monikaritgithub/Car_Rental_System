@@ -12,9 +12,9 @@ The sequence diagram defines these status values:
   CANCELLED  — customer cancelled before admin reviewed
 """
 
-from datetime import datetime, date
-from database import db
+from datetime import date, datetime
 
+from database import db
 
 # Status constants — using strings as shown in the class diagram,
 # but defined here so we avoid typos in multiple places
@@ -66,6 +66,20 @@ class Booking(db.Model):
     # One booking requires exactly one payment record
     payment = db.relationship("Payment", backref="booking", uselist=False, lazy=True)
 
+    def __init__(self, *, booking_id: str = "", customer_id: int = 0,
+                 car_id: int = 0, start_date: "date | None" = None,
+                 end_date: "date | None" = None, total_fee: float = 0.0,
+                 booking_status: str = STATUS_PENDING,
+                 admin_notes: str = "") -> None:
+        self.booking_id = booking_id
+        self.customer_id = customer_id
+        self.car_id = car_id
+        self.start_date = start_date  # type: ignore[assignment]
+        self.end_date = end_date  # type: ignore[assignment]
+        self.total_fee = total_fee
+        self.booking_status = booking_status
+        self.admin_notes = admin_notes
+
     def calculate_total_fee(self, daily_rate: float, days: int) -> float:
         """
         Calculate the rental fee: total = days × daily_rate
@@ -116,6 +130,7 @@ class Booking(db.Model):
     @property
     def rental_days(self) -> int:
         """How many days the rental covers."""
+        assert self.end_date is not None and self.start_date is not None
         return (self.end_date - self.start_date).days
 
     def __repr__(self) -> str:

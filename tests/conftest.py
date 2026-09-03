@@ -1,10 +1,13 @@
 import os
+
 import pytest
-from app.customer_app import create_customer_app
+
 from app.admin_app import create_admin_app
-from database import db
+from app.customer_app import create_customer_app
+from app.models import Admin, Car, Customer
 from config.settings import TestingConfig
-from app.models import Customer, Admin, Car
+from database import db
+
 
 @pytest.fixture
 def customer_app():

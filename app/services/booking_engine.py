@@ -13,12 +13,13 @@ rules stay in one place and can be tested independently of HTTP.
 """
 
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, cast
 
-from database import db
-from app.models.booking import Booking, STATUS_PENDING, STATUS_APPROVED, STATUS_REJECTED, STATUS_CANCELLED
+from app.models.booking import (STATUS_APPROVED, STATUS_CANCELLED,
+                                STATUS_PENDING, STATUS_REJECTED, Booking)
 from app.models.car import Car
-from app.models.payment import Payment, PAYMENT_COMPLETED, PAYMENT_REFUNDED
+from app.models.payment import PAYMENT_COMPLETED, PAYMENT_REFUNDED, Payment
+from database import db
 
 
 def _generate_booking_id() -> str:
@@ -73,12 +74,14 @@ def validate_availability(car: Car, start_date: date, end_date: date) -> tuple[b
     # Check for any overlapping approved bookings for this car.
     # A car might be marked available but have a future approved booking
     # that would conflict.
-    overlapping = db.session.query(Booking).filter(
-        Booking.car_id == car.id,
-        Booking.booking_status == STATUS_APPROVED,
-        Booking.start_date < end_date,
-        Booking.end_date > start_date
-    ).first()
+    overlapping = (
+        db.session.query(Booking)
+        .filter(Booking.car_id == car.id)  # type: ignore[arg-type]
+        .filter(Booking.booking_status == STATUS_APPROVED)  # type: ignore[arg-type]
+        .filter(Booking.start_date < end_date)  # type: ignore[arg-type]
+        .filter(Booking.end_date > start_date)  # type: ignore[arg-type]
+        .first()
+    )
 
     if overlapping:
         return False, "This car already has an approved booking overlapping your selected dates."
@@ -87,7 +90,7 @@ def validate_availability(car: Car, start_date: date, end_date: date) -> tuple[b
 
 
 def calculate_total_fee(daily_rate: float, start_date: date, end_date: date,
-                        car: Optional[Car] = None) -> tuple[float, list]:
+                        car: Optional[Car] = None) -> tuple[float, list[dict[str, object]]]:
     """
     Calculate the full rental cost including any additional charges on the car.
 
@@ -103,7 +106,7 @@ def calculate_total_fee(daily_rate: float, start_date: date, end_date: date,
     days = (end_date - start_date).days
     base_fee = round(daily_rate * days, 2)
 
-    breakdown = [
+    breakdown: list[dict[str, object]] = [
         {
             "name": "Base Rental",
             "amount": base_fee,
@@ -113,7 +116,7 @@ def calculate_total_fee(daily_rate: float, start_date: date, end_date: date,
 
     additional_total = 0.0
     if car and car.additional_charges:
-        for charge in car.additional_charges:
+        for charge in list(car.additional_charges):  # type: ignore[arg-type]
             charge_amount = charge.calculate_for_days(days)
             additional_total += charge_amount
             detail = (f"${charge.amount:.2f}/day × {days} days"
@@ -171,7 +174,7 @@ def create_booking(customer_id: int, car_id: int, start_date: date,
     # Create the mock payment record immediately
     payment = Payment(
         payment_id=_generate_payment_id(),
-        booking_id=booking.id,
+        booking_id=booking.id,  # type: ignore[arg-type]
         amount=total_fee
     )
     # Simulate processing the credit card (always succeeds in demo mode)
@@ -234,9 +237,10 @@ def reject_booking(booking_id: str, admin_notes: str = "") -> tuple[bool, str]:
     booking.updated_at = datetime.utcnow()
 
     # Mark the payment as refunded — the customer paid but the booking was rejected
-    if booking.payment and booking.payment.payment_status == PAYMENT_COMPLETED:
-        booking.payment.payment_status = PAYMENT_REFUNDED
-        booking.payment.confirmed_at = datetime.utcnow()
+    payment = cast(Optional[Payment], booking.payment)
+    if payment and payment.payment_status == PAYMENT_COMPLETED:
+        payment.payment_status = PAYMENT_REFUNDED
+        payment.confirmed_at = datetime.utcnow()
 
     # The car stays available since the booking was rejected
     db.session.commit()
@@ -277,9 +281,10 @@ def admin_cancel_approved_booking(booking_id: str, admin_notes: str = "") -> tup
         car.set_availability(True)
 
     # Issue the refund on the payment record
-    if booking.payment:
-        booking.payment.payment_status = PAYMENT_REFUNDED
-        booking.payment.confirmed_at = datetime.utcnow()
+    payment = cast(Optional[Payment], booking.payment)
+    if payment:
+        payment.payment_status = PAYMENT_REFUNDED
+        payment.confirmed_at = datetime.utcnow()
 
     db.session.commit()
     return True, ""
@@ -308,8 +313,9 @@ def cancel_booking_by_customer(booking_id: str, customer_id: int) -> tuple[bool,
     booking.updated_at = datetime.utcnow()
 
     # Refund the payment since it was already completed
-    if booking.payment and booking.payment.payment_status == PAYMENT_COMPLETED:
-        booking.payment.payment_status = PAYMENT_REFUNDED
+    payment = cast(Optional[Payment], booking.payment)
+    if payment and payment.payment_status == PAYMENT_COMPLETED:
+        payment.payment_status = PAYMENT_REFUNDED
 
     db.session.commit()
     return True, ""

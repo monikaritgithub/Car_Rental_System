@@ -6,7 +6,9 @@ This maps to the Admin class in the class diagram:
 """
 
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
+
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from database import db
 
 
@@ -27,6 +29,13 @@ class Admin(db.Model):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __init__(self, *, employee_id: str, name: str, email: str,
+                 department: str = "") -> None:
+        self.employee_id = employee_id
+        self.name = name
+        self.email = email
+        self.department = department
 
     def set_password(self, plain_password: str) -> None:
         """Hash and store the admin's password securely."""

@@ -1,4 +1,5 @@
-from app.models import Customer, Admin, Car, Booking, Payment
+from app.models import Admin, Booking, Car, Customer, Payment
+
 
 def test_customer_password_hashing(customer_app):
     with customer_app.app_context():
@@ -27,7 +28,8 @@ def test_car_mileage_update(customer_app):
 
 def test_booking_fee_calculation(customer_app):
     with customer_app.app_context():
-        booking = Booking()
+        booking = Booking(booking_id="TEST", customer_id=1, car_id=1,
+                          total_fee=0.0)
         fee = booking.calculate_total_fee(50.0, 3)
         assert fee == 150.0
 

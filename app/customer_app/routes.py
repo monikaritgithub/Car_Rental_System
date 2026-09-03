@@ -12,27 +12,23 @@ The session is used for lightweight authentication — we store the
 customer's ID and name after login.
 """
 
-import os
-from datetime import datetime, date
-from flask import (
-    Blueprint, render_template, request, redirect,
-    url_for, session, flash, send_from_directory, current_app
-)
-
+from datetime import date
 from functools import wraps
 
-from database import db
+from flask import (Blueprint, flash, jsonify, redirect, render_template,
+                   request, send_from_directory, session, url_for)
+
 from app.models.booking import Booking
-from app.services import car_service, customer_service, booking_engine
+from app.services import booking_engine, car_service, customer_service
 from app.services.recommendation_service import recommend_cars
-from flask import jsonify
 from config.settings import BASE_DIR
+from database import db
 
 # All customer routes live under this blueprint
 customer_bp = Blueprint("customer", __name__)
 
 
-# ─── Helper ────────────────────────────────────────────────────────────────────
+# Helper
 
 def customer_required(f):
     """
@@ -49,7 +45,7 @@ def customer_required(f):
     return decorated
 
 
-# ─── Static image serving ──────────────────────────────────────────────────────
+# Static image serving
 
 @customer_bp.route("/images/<path:filename>")
 def serve_image(filename):
@@ -58,7 +54,7 @@ def serve_image(filename):
     return send_from_directory(images_dir, filename)
 
 
-# ─── Home / Car Search ─────────────────────────────────────────────────────────
+# Home / Car Search
 
 @customer_bp.route("/")
 def index():
@@ -69,7 +65,7 @@ def index():
     return render_template("index.html", cars=cars)
 
 
-# ─── Static Info Pages (formerly broken #-links in navbar) ────────────────────
+# Static Info Pages
 
 @customer_bp.route("/smriti-zero")
 def smriti_zero():
@@ -123,7 +119,7 @@ def car_detail(car_id):
     return render_template("car_detail.html", car=car)
 
 
-# ─── Authentication ────────────────────────────────────────────────────────────
+# Authentication
 
 @customer_bp.route("/register", methods=["GET", "POST"])
 def register():
@@ -169,6 +165,7 @@ def register():
             return render_template("register.html")
 
         # Log in automatically after registration
+        assert customer is not None
         session["customer_id"] = customer.id
         session["customer_name"] = customer.name
         flash(f"Welcome to Smriti Car Rental, {customer.name}!", "success")
@@ -207,7 +204,7 @@ def logout():
     return redirect(url_for("customer.index"))
 
 
-# ─── Booking ───────────────────────────────────────────────────────────────────
+# Booking
 
 @customer_bp.route("/book/<car_id>", methods=["GET", "POST"])
 @customer_required
@@ -284,7 +281,7 @@ def payment():
     if request.method == "POST":
         card_number = request.form.get("card_number", "").strip()
         card_holder = request.form.get("card_holder", "").strip()
-        expiry = request.form.get("expiry", "").strip()
+        _expiry = request.form.get("expiry", "").strip()
         cvv = request.form.get("cvv", "").strip()
 
         # Basic card field validation
@@ -323,6 +320,7 @@ def payment():
         session.pop("pending_booking", None)
 
         flash("Payment processed successfully! Your booking is pending admin approval.", "success")
+        assert booking is not None
         return redirect(url_for("customer.booking_pending", booking_id=booking.booking_id))
 
     return render_template("payment.html", booking=booking_data)
@@ -372,7 +370,7 @@ def cancel_booking(booking_id):
     return redirect(url_for("customer.my_bookings"))
 
 
-# ─── API Routes (AJAX) ────────────────────────────────────────────────────────
+# API Routes (AJAX)
 
 @customer_bp.route("/api/recommend", methods=["POST"])
 def api_recommend_cars():
@@ -398,14 +396,15 @@ def api_recommend_cars():
     response = []
     for r in results:
         car = r["car"]
+        assert hasattr(car, "car_id"), "Expected a Car object in recommendation result"
         response.append({
-            "car_id": car.car_id,
-            "make": car.make,
-            "model": car.model,
-            "year": car.year,
-            "category": car.category,
-            "daily_rate": car.daily_rate,
-            "image": car.image,
+            "car_id": car.car_id,  # type: ignore[union-attr]
+            "make": car.make,  # type: ignore[union-attr]
+            "model": car.model,  # type: ignore[union-attr]
+            "year": car.year,  # type: ignore[union-attr]
+            "category": car.category,  # type: ignore[union-attr]
+            "daily_rate": car.daily_rate,  # type: ignore[union-attr]
+            "image": car.image,  # type: ignore[union-attr]
             "score": r["score"],
             "reasons": r["reasons"]
         })

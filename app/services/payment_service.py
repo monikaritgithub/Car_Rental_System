@@ -10,18 +10,20 @@ This implements:
 from datetime import datetime
 from typing import Optional
 
+from sqlalchemy import desc
+
+from app.models.payment import PAYMENT_COMPLETED, PAYMENT_REFUNDED, Payment
 from database import db
-from app.models.payment import Payment, PAYMENT_COMPLETED, PAYMENT_REFUNDED
 
 
 def get_payment_by_booking_id(booking_db_id: int) -> Optional[Payment]:
     """Find the payment record associated with a booking's database ID."""
-    return db.session.query(Payment).filter_by(booking_id=booking_db_id).first()
+    return db.session.query(Payment).filter_by(booking_id=booking_db_id).first()  # type: ignore[return-value]
 
 
 def get_all_payments() -> list[Payment]:
     """Return all payment records, newest first."""
-    return db.session.query(Payment).order_by(Payment.payment_date.desc()).all()
+    return db.session.query(Payment).order_by(desc(Payment.payment_date)).all()  # type: ignore[return-value]
 
 
 def admin_confirm_payment(payment_id: str) -> tuple[bool, str]:

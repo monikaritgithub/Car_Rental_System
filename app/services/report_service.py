@@ -6,14 +6,15 @@ This service collects aggregated data from the database so the admin
 template can display a meaningful business summary.
 """
 
-from database import db
-from app.models.booking import Booking, STATUS_PENDING, STATUS_APPROVED, STATUS_REJECTED, STATUS_CANCELLED
-from app.models.payment import Payment, PAYMENT_COMPLETED
+from app.models.booking import (STATUS_APPROVED, STATUS_CANCELLED,
+                                STATUS_PENDING, STATUS_REJECTED, Booking)
 from app.models.car import Car
 from app.models.customer import Customer
+from app.models.payment import PAYMENT_COMPLETED, Payment
+from database import db
 
 
-def generate_summary_report() -> dict:
+def generate_summary_report() -> dict[str, object]:
     """
     Collect key statistics across the entire system.
 

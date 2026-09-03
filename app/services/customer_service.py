@@ -6,11 +6,13 @@ This implements:
   - Profile data for the customer class diagram
 """
 
-from typing import Optional
-from database import db
-from app.models.customer import Customer
 import random
 from datetime import datetime
+from typing import Optional
+
+from app.models.customer import Customer
+from database import db
+
 
 def register_customer(name: str, email: str, password: str,
                        phone_no: str, license_id_no: str,
