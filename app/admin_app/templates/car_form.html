@@ -7,8 +7,11 @@
 
 <h1 class="page-title">{{ 'Add New Vehicle to Fleet' if action == 'add' else 'Edit Vehicle Details' }}</h1>
 
-<div class="card" style="max-width: 800px;">
-    <form method="POST" action="{{ url_for('admin.add_car') if action == 'add' else url_for('admin.edit_car', car_id=car.car_id) }}">
+<div class="card" style="padding: 2rem;">
+    <!-- enctype="multipart/form-data" is required for file uploads -->
+    <form method="POST"
+          action="{{ url_for('admin.add_car') if action == 'add' else url_for('admin.edit_car', car_id=car.car_id) }}"
+          enctype="multipart/form-data">
         
         <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Basic Information</h3>
         
@@ -38,7 +41,7 @@
             </div>
         </div>
         
-        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Rental Rules & Pricing</h3>
+        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Rental Rules &amp; Pricing</h3>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
             <div class="form-group">
@@ -55,12 +58,44 @@
             </div>
         </div>
         
-        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Media & Description</h3>
-        
-        <div class="form-group">
-            <label class="form-label" for="image">Image Path</label>
-            <input type="text" id="image" name="image" class="form-control" placeholder="e.g. images/toyota.jpg" value="{{ car.image if car else '' }}">
-            <small style="color: var(--gray);">Relative path from the project root.</small>
+        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Media &amp; Description</h3>
+
+        <!-- Car Photo Upload Section -->
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label class="form-label" for="car_image">Car Photo</label>
+
+            <!-- Show current image in edit mode -->
+            {% if action == 'edit' and car and car.image %}
+            <div style="margin-bottom: 1rem;">
+                <div style="font-size:0.78rem; color:var(--gray); margin-bottom:0.4rem; font-weight:600;">CURRENT IMAGE</div>
+                <img src="{{ url_for('admin.serve_image', filename=car.image.split('/')[-1]) }}"
+                     alt="Current car photo"
+                     style="width:220px; height:140px; object-fit:cover; border-radius:6px; border:1px solid var(--border-light);"
+                     id="current-car-img">
+            </div>
+            {% endif %}
+
+            <!-- File upload input -->
+            <input type="file"
+                   id="car_image"
+                   name="car_image"
+                   class="form-control"
+                   accept="image/jpeg,image/png,image/webp,image/gif"
+                   onchange="previewImage(this)"
+                   style="padding: 0.5rem;">
+            <small style="color: var(--gray); display:block; margin-top:0.4rem;">
+                Accepted formats: JPG, PNG, WEBP, GIF. Max size: 2MB.
+                {% if action == 'edit' %}Leave empty to keep the current image.{% endif %}
+            </small>
+
+            <!-- Live preview of selected image -->
+            <div id="image-preview-container" style="display:none; margin-top:1rem;">
+                <div style="font-size:0.78rem; color:var(--gray); margin-bottom:0.4rem; font-weight:600;">PREVIEW</div>
+                <img id="image-preview"
+                     src=""
+                     alt="Image preview"
+                     style="width:220px; height:140px; object-fit:cover; border-radius:6px; border:2px solid var(--primary);">
+            </div>
         </div>
         
         <div class="form-group">
@@ -73,5 +108,137 @@
             <a href="{{ url_for('admin.cars') }}" class="btn btn-outline" style="padding: 0.75rem 2rem;">Cancel</a>
         </div>
     </form>
+
+    <!-- ─── ADDITIONAL CHARGES (Edit mode only) ─── -->
+    {% if action == 'edit' and car %}
+    <div style="margin-top: 3rem; border-top: 2px solid var(--border-light); padding-top: 2rem;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem; color: var(--secondary);">
+            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;margin-top:-2px;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Additional Charges for {{ car.car_id }}
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 500;">
+            Add mandatory or optional extra fees for this vehicle (e.g. GPS, Insurance, Airport Surcharge).
+            These are displayed to customers during booking and included in the total fee.
+        </p>
+
+        <!-- Existing charges list -->
+        {% if car.additional_charges %}
+        <div style="margin-bottom: 1.5rem;">
+            <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+                <thead>
+                    <tr style="background:var(--bg-main);">
+                        <th style="padding:0.75rem 1rem; text-align:left; font-weight:700; color:var(--secondary);">Name</th>
+                        <th style="padding:0.75rem 1rem; text-align:left; font-weight:700; color:var(--secondary);">Amount</th>
+                        <th style="padding:0.75rem 1rem; text-align:left; font-weight:700; color:var(--secondary);">Type</th>
+                        <th style="padding:0.75rem 1rem; text-align:left; font-weight:700; color:var(--secondary);">Required</th>
+                        <th style="padding:0.75rem 1rem; text-align:left; font-weight:700; color:var(--secondary);"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for charge in car.additional_charges %}
+                    <tr style="border-bottom:1px solid var(--border-light);">
+                        <td style="padding:0.75rem 1rem; font-weight:600;">
+                            {{ charge.name }}
+                            {% if charge.description %}
+                            <div style="font-size:0.78rem; color:var(--text-muted); font-weight:400; margin-top:0.2rem;">{{ charge.description }}</div>
+                            {% endif %}
+                        </td>
+                        <td style="padding:0.75rem 1rem; font-weight:700; color:var(--primary);">${{ "%.2f"|format(charge.amount) }}</td>
+                        <td style="padding:0.75rem 1rem;">
+                            <span style="background:#edf2f7; color:var(--secondary); padding:0.2rem 0.6rem; border-radius:999px; font-size:0.75rem; font-weight:700;">
+                                {{ 'Per Day' if charge.charge_type == 'per_day' else 'One-Time' }}
+                            </span>
+                        </td>
+                        <td style="padding:0.75rem 1rem;">
+                            <span style="color:{{ 'var(--danger)' if charge.is_mandatory else 'var(--text-muted)' }}; font-weight:700; font-size:0.85rem;">
+                                {{ 'Mandatory' if charge.is_mandatory else 'Optional' }}
+                            </span>
+                        </td>
+                        <td style="padding:0.75rem 1rem;">
+                            <form method="POST" action="{{ url_for('admin.delete_charge', car_id=car.car_id, charge_id=charge.id) }}"
+                                  onsubmit="return confirm('Remove this charge?');">
+                                <button type="submit" class="btn btn-danger btn-sm" style="padding:0.3rem 0.75rem; font-size:0.78rem;">
+                                    Remove
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="padding:1.5rem; background:var(--bg-main); border-radius:8px; text-align:center; margin-bottom:1.5rem; color:var(--text-muted); font-weight:600; font-size:0.88rem;">
+            No additional charges defined for this vehicle yet.
+        </div>
+        {% endif %}
+
+        <!-- Add new charge form -->
+        <div style="background:var(--bg-main); border-radius:8px; padding:1.5rem;">
+            <h4 style="margin-bottom:1.25rem; font-size:1rem; color:var(--secondary);">Add New Charge</h4>
+            <form method="POST" action="{{ url_for('admin.add_charge', car_id=car.car_id) }}">
+                <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="charge_name">Charge Name</label>
+                        <input type="text" id="charge_name" name="charge_name" class="form-control"
+                               placeholder="e.g. GPS Navigation" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="charge_amount">Amount ($)</label>
+                        <input type="number" step="0.01" id="charge_amount" name="charge_amount"
+                               class="form-control" min="0.01" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="charge_type">Type</label>
+                        <select id="charge_type" name="charge_type" class="form-control">
+                            <option value="one_time">One-Time</option>
+                            <option value="per_day">Per Day</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="is_mandatory">Required?</label>
+                        <select id="is_mandatory" name="is_mandatory" class="form-control">
+                            <option value="true">Mandatory</option>
+                            <option value="false">Optional</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label class="form-label" for="charge_description">Description (optional)</label>
+                    <input type="text" id="charge_description" name="charge_description" class="form-control"
+                           placeholder="Brief note shown to customers">
+                </div>
+                <button type="submit" class="btn btn-primary" style="padding:0.6rem 1.5rem;">
+                    Add Charge
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
 </div>
+
+<script>
+/**
+ * Show a live preview of the selected image before the form is submitted.
+ * This runs entirely in the browser — no server round-trip needed.
+ */
+function previewImage(input) {
+    var preview = document.getElementById('image-preview');
+    var container = document.getElementById('image-preview-container');
+    var currentImg = document.getElementById('current-car-img');
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            container.style.display = 'block';
+            // Dim the current image to indicate it will be replaced
+            if (currentImg) currentImg.style.opacity = '0.4';
+        };
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        container.style.display = 'none';
+        if (currentImg) currentImg.style.opacity = '1';
+    }
+}
+</script>
 {% endblock %}

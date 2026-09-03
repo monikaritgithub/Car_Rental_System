@@ -75,3 +75,6 @@ flask_session/
 # AI Agent tracking files
 state.json
 task.md
+
+# Academic documentation — local only, not for repo
+SYSTEM_DOCUMENTATION.md

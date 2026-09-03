@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Deals & Promotions - Smriti Rentals{% endblock %}
+
+{% block content %}
+<div style="max-width:1000px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:3rem;">
+        <h1 style="font-size:2.8rem;font-weight:800;margin-bottom:0.75rem;">Hot Deals <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c0 0-5 6.3-5 11.5a5 5 0 0010 0C17 8.3 12 2 12 2z"/></svg></h1>
+        <p style="font-size:1.1rem;color:var(--text-muted);font-weight:500;">
+            Save big with our current promotions. Limited time offers - book today!
+        </p>
+    </div>
+
+    <!-- FEATURED DEAL -->
+    <div style="
+        background: linear-gradient(135deg, var(--primary), #c2003a);
+        border-radius:16px;
+        padding:3rem;
+        margin-bottom:2.5rem;
+        color:white;
+        display:grid;
+        grid-template-columns:1fr auto;
+        gap:2rem;
+        align-items:center;
+    ">
+        <div>
+            <div style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;opacity:0.8;margin-bottom:0.5rem;"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> FEATURED OFFER</div>
+            <h2 style="font-size:2.2rem;font-weight:800;color:white;margin-bottom:0.75rem;line-height:1.2;">
+                Save 20% on Weekend Rentals
+            </h2>
+            <p style="font-size:1rem;opacity:0.9;font-weight:500;margin-bottom:1.5rem;line-height:1.6;">
+                Book any vehicle for Friday–Sunday and receive 20% off your total rental fee.
+                Valid for all categories except Luxury. Book by 30 September 2026.
+            </p>
+            <div style="font-size:0.85rem;opacity:0.75;font-weight:600;margin-bottom:1.5rem;">
+                Use code: <span style="background:rgba(255,255,255,0.2);padding:0.25rem 0.75rem;border-radius:6px;letter-spacing:0.1em;font-weight:800;">WEEKEND20</span>
+            </div>
+            <a href="{{ url_for('customer.browse_cars') }}" class="btn" style="background:white;color:var(--primary);font-weight:800;padding:0.75rem 2rem;">
+                Book Now →
+            </a>
+        </div>
+        <div style="font-size:6rem;text-align:center;"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 00-.84-.99L16 11l-2.7-3.6a2 2 0 00-1.6-.8H9.3a2 2 0 00-1.6.8L5 11l-5.16.86a1 1 0 00-.84.99V16h3m10 0a2 2 0 10-4 0 2 2 0 004 0zm-10 0a2 2 0 10-4 0 2 2 0 004 0z"/></svg></div>
+    </div>
+
+    <!-- DEAL CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-bottom:3rem;">
+
+        {% set deals = [
+            {
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+                'tag': 'LONG STAY',
+                'title': '7+ Days: 15% Off',
+                'desc': 'Rent any vehicle for 7 or more consecutive days and save 15% automatically - no code needed.',
+                'valid': 'Valid year-round',
+                'color': '#ebf8ff',
+                'border': '#63b3ed'
+            },
+            {
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 014 13a7 7 0 0114 0v7h-7z"/></svg>',
+                'tag': 'ECO SPECIAL',
+                'title': 'Go Green & Save 10%',
+                'desc': 'Choose any hybrid or electric vehicle and receive 10% off. Help the environment while saving money.',
+                'valid': 'Valid until 31 December 2026',
+                'color': '#f0fff4',
+                'border': '#68d391'
+            },
+            {
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>',
+                'tag': 'STUDENT DEAL',
+                'title': 'Student Discount - 12%',
+                'desc': 'Verify your student ID at pickup and receive 12% back. Available for Economy and Sedan categories.',
+                'valid': 'Valid with student ID',
+                'color': '#faf5ff',
+                'border': '#b794f4'
+            },
+            {
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M16 10h.01M8 10h.01M8 14h.01M12 14h.01M16 14h.01"/></svg>',
+                'tag': 'CORPORATE',
+                'title': 'Business Accounts',
+                'desc': 'Register a corporate account and get priority pricing, dedicated support, and monthly invoicing.',
+                'valid': 'Contact us to register',
+                'color': '#fffaf0',
+                'border': '#f6ad55'
+            },
+            {
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6M3 12a9 9 0 0115-6.7L21 8M3 22v-6h6M21 12a9 9 0 01-15 6.7L3 16"/></svg>',
+                'tag': 'LOYALTY',
+                'title': 'Returning Customer - 8%',
+                'desc': 'Already rented with us? Your next booking automatically receives 8% off at checkout.',
+                'valid': 'Automatic - no code needed',
+                'color': '#fff5f7',
+                'border': '#fc8181'
+            },
+            {
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L2 8.5l7.5 4-2.5 2.5-3.5-.5-1.5 1.5 3 1.5 1.5 3 1.5-1.5-.5-3.5 2.5-2.5 4 7.5 1.7-1.7c.4-.2.7-.6.6-1.1z"/></svg>',
+                'tag': 'AIRPORT PICKUP',
+                'title': 'Free Airport Pickup Fee',
+                'desc': 'No surcharge when picking up from any of our airport branches. Enjoy complimentary transfers.',
+                'valid': 'All airport branches',
+                'color': '#f0fff4',
+                'border': '#4fd1c5'
+            }
+        ] %}
+
+        {% for deal in deals %}
+        <div style="
+            background:{{ deal.color }};
+            border:1px solid {{ deal.border }};
+            border-radius:12px;
+            padding:2rem;
+            transition:transform 0.2s,box-shadow 0.2s;
+        " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='var(--shadow-hover)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="font-size:2rem;margin-bottom:0.75rem;">{{ deal.icon | safe }}</div>
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:0.4rem;">{{ deal.tag }}</div>
+            <h3 style="font-size:1.1rem;font-weight:800;margin-bottom:0.75rem;color:var(--secondary);">{{ deal.title }}</h3>
+            <p style="font-size:0.88rem;color:var(--text-secondary);font-weight:500;line-height:1.6;margin-bottom:1rem;">{{ deal.desc }}</p>
+            <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> {{ deal.valid }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- TERMS -->
+    <div style="background:var(--bg-card);border-radius:12px;padding:1.5rem 2rem;box-shadow:var(--shadow-sm);margin-bottom:2rem;">
+        <h4 style="margin-bottom:0.75rem;font-size:1rem;color:var(--secondary);">Terms & Conditions</h4>
+        <p style="font-size:0.82rem;color:var(--text-muted);font-weight:500;line-height:1.7;">
+            Discounts cannot be combined. Only one promotion applies per booking. All offers subject to vehicle availability.
+            Smriti Car Rental reserves the right to modify or withdraw promotions at any time without prior notice.
+        </p>
+    </div>
+
+    <div style="text-align:center;">
+        <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary" style="font-size:1rem;padding:0.9rem 3rem;">
+            Browse All Cars →
+        </a>
+    </div>
+</div>
+{% endblock %}

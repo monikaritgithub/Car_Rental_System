@@ -19,14 +19,27 @@
                     <span style="color:var(--text-muted); font-weight:600;">Dates</span>
                     <strong style="color:var(--secondary);">{{ booking.start_date }} &rarr; {{ booking.end_date }}</strong>
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem; font-size:0.9rem;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:1.5rem; font-size:0.9rem;">
                     <span style="color:var(--text-muted); font-weight:600;">Duration</span>
                     <strong style="color:var(--secondary);">{{ booking.rental_days }} day(s)</strong>
                 </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
-                    <span style="color:var(--text-muted); font-weight:600;">Daily Rate</span>
-                    <strong style="color:var(--secondary);">${{ "%.2f"|format(booking.daily_rate) }}</strong>
+
+                <div style="border-top:1px dashed var(--border-light); margin-bottom:1.5rem;"></div>
+
+                <div style="margin-bottom:1rem; font-size:0.85rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Charges Breakdown</div>
+                
+                {% for item in booking.breakdown %}
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem; font-size:0.9rem;">
+                    <div>
+                        <span style="color:var(--secondary); font-weight:600;">{{ item.name }}</span>
+                        {% if item.mandatory %}
+                            <span style="background:var(--bg-main); font-size:0.65rem; padding:0.1rem 0.3rem; border-radius:4px; margin-left:0.25rem;">Required</span>
+                        {% endif %}
+                        <div style="font-size:0.78rem; color:var(--text-muted);">{{ item.detail }}</div>
+                    </div>
+                    <strong style="color:var(--secondary);">${{ "%.2f"|format(item.amount) }}</strong>
                 </div>
+                {% endfor %}
             </div>
             
             <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:1.5rem;">

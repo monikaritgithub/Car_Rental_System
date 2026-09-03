@@ -11,5 +11,6 @@ from .admin import Admin
 from .car import Car
 from .booking import Booking
 from .payment import Payment
+from .additional_charge import AdditionalCharge
 
-__all__ = ["Customer", "Admin", "Car", "Booking", "Payment"]
+__all__ = ["Customer", "Admin", "Car", "Booking", "Payment", "AdditionalCharge"]

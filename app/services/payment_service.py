@@ -1,17 +1,17 @@
 """
-Payment service — handles payment operations and admin confirmation.
+Payment service — handles payment operations and admin confirmation/refunds.
 
 This implements:
-  - Make Payment (Customer use case) — handled in booking_engine, but
-    admin confirmation lives here
+  - Make Payment (Customer use case) — handled in booking_engine
   - Confirm Payment (Admin use case)
+  - Refund Payment (Admin use case) — when approved booking is cancelled
 """
 
 from datetime import datetime
 from typing import Optional
 
 from database import db
-from app.models.payment import Payment, PAYMENT_COMPLETED
+from app.models.payment import Payment, PAYMENT_COMPLETED, PAYMENT_REFUNDED
 
 
 def get_payment_by_booking_id(booking_db_id: int) -> Optional[Payment]:
@@ -43,5 +43,32 @@ def admin_confirm_payment(payment_id: str) -> tuple[bool, str]:
         return False, "Only completed payments can be confirmed."
 
     payment.confirm_payment()
+    db.session.commit()
+    return True, ""
+
+
+def admin_refund_payment(payment_id: str) -> tuple[bool, str]:
+    """
+    Admin manually issues a refund for a payment.
+
+    Called when an approved booking is cancelled after payment was
+    already collected. Marks the payment status as REFUNDED so the
+    customer and admin can see the refund has been processed.
+
+    In a real system this would call the payment gateway's refund API.
+    In this demo system, it simply updates the status in the database.
+    """
+    payment = db.session.query(Payment).filter_by(payment_id=payment_id).first()
+    if payment is None:
+        return False, "Payment record not found."
+
+    if payment.payment_status == PAYMENT_REFUNDED:
+        return False, "This payment has already been refunded."
+
+    if payment.payment_status not in (PAYMENT_COMPLETED,):
+        return False, "Only completed payments can be refunded."
+
+    payment.payment_status = PAYMENT_REFUNDED
+    payment.confirmed_at = datetime.utcnow()
     db.session.commit()
     return True, ""

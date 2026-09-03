@@ -3,7 +3,7 @@ Booking Engine — the central business logic for creating and managing bookings
 
 This service implements the sequence diagram workflow exactly:
   - Validate availability and rent period (steps 6-7)
-  - Calculate fee using Days × Rate formula (steps 8-9)
+  - Calculate fee using Days × Rate formula (steps 8-9), plus any additional charges
   - Create booking with PENDING status (step 14)
   - Approve or reject bookings (step 19)
   - Update car availability when approved (step 21)
@@ -18,7 +18,7 @@ from typing import Optional
 from database import db
 from app.models.booking import Booking, STATUS_PENDING, STATUS_APPROVED, STATUS_REJECTED, STATUS_CANCELLED
 from app.models.car import Car
-from app.models.payment import Payment, PAYMENT_COMPLETED
+from app.models.payment import Payment, PAYMENT_COMPLETED, PAYMENT_REFUNDED
 
 
 def _generate_booking_id() -> str:
@@ -86,16 +86,48 @@ def validate_availability(car: Car, start_date: date, end_date: date) -> tuple[b
     return True, ""
 
 
-def calculate_total_fee(daily_rate: float, start_date: date, end_date: date) -> float:
+def calculate_total_fee(daily_rate: float, start_date: date, end_date: date,
+                        car: Optional[Car] = None) -> tuple[float, list]:
     """
-    Calculate rental cost using the formula from the sequence diagram:
-    Total Fee = Number of Days × Daily Rate
+    Calculate the full rental cost including any additional charges on the car.
 
-    Sequence diagram step 8:
-    'UI → Engine: Request fee calculation (Days × Rate)'
+    Formula (sequence diagram step 8):
+      Base fee = Days × Daily Rate
+      Additional charges = sum of per_day charges × days + one_time charges
+      Total = Base fee + Additional charges
+
+    Returns a tuple of:
+      - total_fee (float): the grand total
+      - breakdown (list of dicts): itemised line items for display
     """
     days = (end_date - start_date).days
-    return round(daily_rate * days, 2)
+    base_fee = round(daily_rate * days, 2)
+
+    breakdown = [
+        {
+            "name": "Base Rental",
+            "amount": base_fee,
+            "detail": f"${daily_rate:.2f}/day × {days} days"
+        }
+    ]
+
+    additional_total = 0.0
+    if car and car.additional_charges:
+        for charge in car.additional_charges:
+            charge_amount = charge.calculate_for_days(days)
+            additional_total += charge_amount
+            detail = (f"${charge.amount:.2f}/day × {days} days"
+                      if charge.charge_type == "per_day"
+                      else f"${charge.amount:.2f} flat fee")
+            breakdown.append({
+                "name": charge.name,
+                "amount": charge_amount,
+                "detail": detail,
+                "mandatory": charge.is_mandatory
+            })
+
+    total_fee = round(base_fee + additional_total, 2)
+    return total_fee, breakdown
 
 
 def create_booking(customer_id: int, car_id: int, start_date: date,
@@ -121,7 +153,7 @@ def create_booking(customer_id: int, car_id: int, start_date: date,
     if not valid:
         return None, error
 
-    total_fee = calculate_total_fee(car.daily_rate, start_date, end_date)
+    total_fee, _ = calculate_total_fee(car.daily_rate, start_date, end_date, car)
 
     # Create the booking record
     booking = Booking(
@@ -188,8 +220,7 @@ def reject_booking(booking_id: str, admin_notes: str = "") -> tuple[bool, str]:
     Admin rejects a pending booking.
 
     The car remains available since the booking never went through.
-    The payment would be refunded in a real system; here we just
-    update the status for demonstration purposes.
+    The payment is marked REFUNDED since the customer already paid.
     """
     booking = db.session.query(Booking).filter_by(booking_id=booking_id).first()
     if booking is None:
@@ -202,7 +233,54 @@ def reject_booking(booking_id: str, admin_notes: str = "") -> tuple[bool, str]:
     booking.admin_notes = admin_notes
     booking.updated_at = datetime.utcnow()
 
+    # Mark the payment as refunded — the customer paid but the booking was rejected
+    if booking.payment and booking.payment.payment_status == PAYMENT_COMPLETED:
+        booking.payment.payment_status = PAYMENT_REFUNDED
+        booking.payment.confirmed_at = datetime.utcnow()
+
     # The car stays available since the booking was rejected
+    db.session.commit()
+    return True, ""
+
+
+def admin_cancel_approved_booking(booking_id: str, admin_notes: str = "") -> tuple[bool, str]:
+    """
+    Admin cancels an already-APPROVED booking and issues a refund.
+
+    This handles the case where:
+      1. Customer paid → payment was COMPLETED
+      2. Admin approved the booking → car marked unavailable
+      3. Admin later needs to cancel (e.g., car breaks down, double booking)
+
+    On cancellation:
+      - Booking status → CANCELLED
+      - Car → available again (set available_now = True)
+      - Payment → REFUNDED
+
+    Returns (True, "") on success or (False, reason) on failure.
+    """
+    booking = db.session.query(Booking).filter_by(booking_id=booking_id).first()
+    if booking is None:
+        return False, "Booking not found."
+
+    if booking.booking_status != STATUS_APPROVED:
+        return False, f"Only APPROVED bookings can be cancelled via this action. Current status: {booking.booking_status}"
+
+    # Cancel the booking
+    booking.booking_status = STATUS_CANCELLED
+    booking.admin_notes = (booking.admin_notes or "") + f"\n[CANCELLED] {admin_notes}".strip()
+    booking.updated_at = datetime.utcnow()
+
+    # Set car back to available — the rental is no longer happening
+    car = db.session.get(Car, booking.car_id)
+    if car:
+        car.set_availability(True)
+
+    # Issue the refund on the payment record
+    if booking.payment:
+        booking.payment.payment_status = PAYMENT_REFUNDED
+        booking.payment.confirmed_at = datetime.utcnow()
+
     db.session.commit()
     return True, ""
 
@@ -228,6 +306,10 @@ def cancel_booking_by_customer(booking_id: str, customer_id: int) -> tuple[bool,
 
     booking.booking_status = STATUS_CANCELLED
     booking.updated_at = datetime.utcnow()
+
+    # Refund the payment since it was already completed
+    if booking.payment and booking.payment.payment_status == PAYMENT_COMPLETED:
+        booking.payment.payment_status = PAYMENT_REFUNDED
 
     db.session.commit()
     return True, ""

@@ -121,17 +121,54 @@
                 <hr style="border:0; border-top:1px solid var(--border-light); margin:1.5rem 0;">
 
                 <form method="POST" action="{{ url_for('admin.reject_booking', booking_id=booking.booking_id) }}"
-                      onsubmit="return confirm('Are you sure you want to reject this booking?');">
+                      onsubmit="return confirm('Reject this booking? The payment will be marked for refund.');">
                     <div class="form-group">
                         <label class="form-label" for="admin_notes_reject">Rejection Reason (Required)</label>
                         <textarea id="admin_notes_reject" name="admin_notes" class="form-control" rows="2" required placeholder="State the reason..."></textarea>
                     </div>
                     <button type="submit" class="btn btn-danger" style="width:100%;">
-                        Reject Booking
+                        Reject Booking &amp; Refund
                     </button>
                 </form>
             </div>
         </div>
+
+        {% elif booking.booking_status == 'APPROVED' %}
+        <!-- APPROVED booking: show Cancel & Refund option -->
+        <div class="card" style="margin-bottom:0; border-color:var(--warning);">
+            <div class="card-header">
+                <h3 class="card-title" style="color:var(--warning);"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;margin-top:-2px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Cancel &amp; Refund</h3>
+            </div>
+            <div style="padding:1.5rem;">
+                <p style="font-size:0.88rem;color:var(--text-secondary);font-weight:500;line-height:1.6;margin-bottom:1.25rem;">
+                    This booking is already <strong>approved</strong> and the customer has paid
+                    <strong>${{ "%.2f"|format(booking.total_fee) }}</strong>.
+                    Cancelling will mark the payment as <strong>REFUNDED</strong> and make the car available again.
+                </p>
+                <form method="POST"
+                      action="{{ url_for('admin.cancel_and_refund_booking', booking_id=booking.booking_id) }}"
+                      onsubmit="return confirm('Are you sure? This will cancel the booking and issue a full refund of ${{ "%.2f"|format(booking.total_fee) }}.');">
+                    <div class="form-group">
+                        <label class="form-label" for="admin_notes_cancel">Cancellation Reason (Required)</label>
+                        <textarea id="admin_notes_cancel" name="admin_notes" class="form-control" rows="2"
+                                  required placeholder="Reason for cancellation (e.g. vehicle breakdown, maintenance)..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger" style="width:100%;">
+                        Cancel Booking &amp; Issue Refund
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% if booking.admin_notes %}
+        <div class="card" style="margin-bottom:0;">
+            <div class="card-header"><h3 class="card-title">Admin Notes</h3></div>
+            <div style="padding: 1.5rem;">
+                <p style="color:var(--text-secondary); font-size:0.92rem; line-height:1.7;">{{ booking.admin_notes }}</p>
+            </div>
+        </div>
+        {% endif %}
+
         {% elif booking.admin_notes %}
         <div class="card" style="margin-bottom:0;">
             <div class="card-header"><h3 class="card-title">Admin Notes</h3></div>
@@ -144,3 +181,4 @@
     </div>
 </div>
 {% endblock %}
+

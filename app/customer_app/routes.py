@@ -19,9 +19,13 @@ from flask import (
     url_for, session, flash, send_from_directory, current_app
 )
 
+from functools import wraps
+
 from database import db
 from app.models.booking import Booking
 from app.services import car_service, customer_service, booking_engine
+from app.services.recommendation_service import recommend_cars
+from flask import jsonify
 from config.settings import BASE_DIR
 
 # All customer routes live under this blueprint
@@ -33,11 +37,9 @@ customer_bp = Blueprint("customer", __name__)
 def customer_required(f):
     """
     Decorator that redirects to the login page if no customer is signed in.
-
-    We use a simple session-based approach — when the customer logs in we
-    store their ID in the session, and when they log out we clear it.
+    
+    Uses a simple session-based approach to check if the customer is logged in.
     """
-    from functools import wraps
     @wraps(f)
     def decorated(*args, **kwargs):
         if "customer_id" not in session:
@@ -62,12 +64,35 @@ def serve_image(filename):
 def index():
     """
     Landing page — shows available cars immediately.
-
-    The sequence diagram starts here: Customer searches available cars,
-    UI queries cars where availableNow = true, and displays the list.
     """
     cars = car_service.get_available_cars()
     return render_template("index.html", cars=cars)
+
+
+# ─── Static Info Pages (formerly broken #-links in navbar) ────────────────────
+
+@customer_bp.route("/smriti-zero")
+def smriti_zero():
+    """Smriti Zero — electric and hybrid fleet showcase page."""
+    return render_template("smriti_zero.html")
+
+
+@customer_bp.route("/locations")
+def locations():
+    """Branch locations across New Zealand."""
+    return render_template("locations.html")
+
+
+@customer_bp.route("/deals")
+def deals():
+    """Current promotions and discount offers."""
+    return render_template("deals.html")
+
+
+@customer_bp.route("/about")
+def about():
+    """Company information, story, and contact details."""
+    return render_template("about.html")
 
 
 @customer_bp.route("/cars")
@@ -89,8 +114,7 @@ def browse_cars():
 @customer_bp.route("/cars/<car_id>")
 def car_detail(car_id):
     """
-    Car detail page — corresponds to viewCarDetails() in the class diagram
-    and 'View Car Details' in the use case diagram.
+    Car detail page — shows specifications and booking form.
     """
     car = car_service.get_car_by_id(car_id)
     if car is None:
@@ -104,10 +128,10 @@ def car_detail(car_id):
 @customer_bp.route("/register", methods=["GET", "POST"])
 def register():
     """
-    Customer registration — Login/Register use case.
-
-    On GET: show the registration form.
-    On POST: validate input, create the account, log in automatically.
+    Customer registration.
+    
+    GET: Display the registration form.
+    POST: Process registration, handle validation, and log the user in automatically.
     """
     # If already logged in, send them to the car listing
     if "customer_id" in session:
@@ -189,19 +213,10 @@ def logout():
 @customer_required
 def book_car(car_id):
     """
-    Booking form — Book/Reserve Car use case.
+    Booking form — Handle car reservations.
 
-    GET: Show the booking form with date pickers and fee calculator.
-    POST: Validate dates, check availability, calculate fee, store in session
-          for the payment step.
-
-    This implements sequence diagram steps 5–10:
-    - Customer selects dates and books car (step 5)
-    - Validate availability and rent period (step 6)
-    - Return validation result (step 7)
-    - Request fee calculation (step 8)
-    - Return total fee (step 9)
-    - Display fee summary (step 10)
+    GET: Show the booking form with date pickers.
+    POST: Validate dates and availability, calculate total fee, and prepare session for payment.
     """
     car = car_service.get_car_by_id(car_id)
     if car is None:
@@ -223,14 +238,14 @@ def book_car(car_id):
             flash("Please enter valid dates.", "error")
             return render_template("booking.html", car=car, today=date.today().isoformat())
 
-        # Validate through the booking engine — same logic as sequence diagram step 6
+        # Check if the car is available for the requested dates
         valid, error = booking_engine.validate_availability(car, start_date, end_date)
         if not valid:
             flash(error, "error")
             return render_template("booking.html", car=car, today=date.today().isoformat())
 
-        # Calculate the fee — sequence diagram step 8
-        total_fee = booking_engine.calculate_total_fee(car.daily_rate, start_date, end_date)
+        # Calculate the total rental fee and itemized breakdown
+        total_fee, breakdown = booking_engine.calculate_total_fee(car.daily_rate, start_date, end_date, car)
         rental_days = (end_date - start_date).days
 
         # Store booking details in session so the payment page can use them
@@ -242,10 +257,11 @@ def book_car(car_id):
             "end_date": end_str,
             "rental_days": rental_days,
             "daily_rate": car.daily_rate,
-            "total_fee": total_fee
+            "total_fee": total_fee,
+            "breakdown": breakdown
         }
 
-        # Redirect to payment — sequence diagram step 10/11
+        # Proceed to payment step
         return redirect(url_for("customer.payment"))
 
     return render_template("booking.html", car=car, today=date.today().isoformat())
@@ -255,18 +271,10 @@ def book_car(car_id):
 @customer_required
 def payment():
     """
-    Mock Stripe-style payment page — Make Payment use case.
+    Mock Stripe-style payment page.
 
-    GET: Show the checkout form pre-filled with booking summary.
-    POST: Process mock payment, create booking record, show pending notice.
-
-    This implements sequence diagram steps 11–17:
-    - Customer enters card details and pays (step 11)
-    - Send transaction to payment gateway (step 12)
-    - Return payment approval (step 13)
-    - Create booking with PENDING status (step 14)
-    - Save booking record (step 15)
-    - Show booking pending notice (step 17)
+    GET: Show the checkout form with a booking summary.
+    POST: Process payment, create the booking, and display confirmation.
     """
     booking_data = session.get("pending_booking")
     if not booking_data:
@@ -311,7 +319,7 @@ def payment():
             flash(error, "error")
             return render_template("payment.html", booking=booking_data)
 
-        # Clear the pending booking from the session — booking is now in the DB
+        # Clear the pending booking from the session since it's now saved in the database
         session.pop("pending_booking", None)
 
         flash("Payment processed successfully! Your booking is pending admin approval.", "success")
@@ -324,8 +332,7 @@ def payment():
 @customer_required
 def booking_pending(booking_id):
     """
-    Booking pending confirmation page — sequence diagram step 17.
-    'Engine → Customer: Show booking pending notice'
+    Booking pending confirmation page.
     """
     booking = db.session.query(Booking).filter_by(
         booking_id=booking_id,
@@ -342,36 +349,65 @@ def booking_pending(booking_id):
 @customer_bp.route("/my-bookings")
 @customer_required
 def my_bookings():
-    """
-    Customer's booking history page.
-
-    Shows all bookings (pending, approved, rejected, cancelled)
-    so the customer can track their reservation status.
-    """
-    bookings = db.session.query(Booking).filter_by(
-        customer_id=session["customer_id"]
-    ).order_by(Booking.created_at.desc()).all()
-
+    """View the logged-in customer's booking history."""
+    customer_id = session["customer_id"]
+    bookings = db.session.query(Booking).filter_by(customer_id=customer_id).order_by(Booking.created_at.desc()).all()
     return render_template("my_bookings.html", bookings=bookings)
 
 
-@customer_bp.route("/cancel/<booking_id>", methods=["POST"])
+@customer_bp.route("/cancel-booking/<booking_id>", methods=["POST"])
 @customer_required
 def cancel_booking(booking_id):
     """
-    Cancel a pending booking — Cancel Reservation use case.
-
-    Customers can only cancel PENDING bookings. Once approved,
-    they need to contact the company directly.
+    Customer cancels their own pending booking.
     """
-    success, error = booking_engine.cancel_booking_by_customer(
-        booking_id=booking_id,
-        customer_id=session["customer_id"]
-    )
+    customer_id = session["customer_id"]
+    success, error = booking_engine.cancel_booking_by_customer(booking_id, customer_id)
 
     if success:
-        flash("Your reservation has been cancelled.", "success")
+        flash(f"Booking {booking_id} has been cancelled successfully.", "success")
     else:
         flash(error, "error")
 
     return redirect(url_for("customer.my_bookings"))
+
+
+# ─── API Routes (AJAX) ────────────────────────────────────────────────────────
+
+@customer_bp.route("/api/recommend", methods=["POST"])
+def api_recommend_cars():
+    """
+    API endpoint for the AI Car Recommendation widget.
+    Takes JSON payload with user preferences and returns recommended cars.
+    """
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    try:
+        passengers = int(data.get("passengers", 2))
+        budget = float(data.get("budget", 100.0))
+        purpose = data.get("purpose", "city")
+        days = int(data.get("days", 3))
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid input format"}), 400
+
+    results = recommend_cars(passengers, budget, purpose, days)
+
+    # Format for JSON response
+    response = []
+    for r in results:
+        car = r["car"]
+        response.append({
+            "car_id": car.car_id,
+            "make": car.make,
+            "model": car.model,
+            "year": car.year,
+            "category": car.category,
+            "daily_rate": car.daily_rate,
+            "image": car.image,
+            "score": r["score"],
+            "reasons": r["reasons"]
+        })
+
+    return jsonify({"recommendations": response})

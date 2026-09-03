@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Smriti Rentals — Save up to 20%{% endblock %}
+{% block title %}Smriti Rentals: Save up to 20%{% endblock %}
 
 {% block content %}
 <!-- We override the container constraints for the hero to make it full width -->
 </div> <!-- close .container temporarily -->
 
 <!-- HERO SECTION -->
-<div class="hero" style="background-image: url('{{ url_for('customer.serve_image', filename='bmw-3series.jpg') }}'); margin-bottom: 4rem;">
+<div class="hero" style="background-image: url('{{ url_for('customer.serve_image', filename='bmw-3series.jpg') }}'); margin-bottom: 2rem;">
     <div class="hero-content">
         <h1>Save up to 20%<br>Smriti love it all.</h1>
         <p>Hot Deals available nationwide<br>Save up to 20%</p>
@@ -44,6 +44,182 @@
 </div>
 
 <div class="container">
+    <!-- AI RECOMMENDATION WIDGET -->
+    <div style="background:linear-gradient(135deg, #0f2027, #203a43, #2c5364); border-radius:16px; padding:2rem; margin-bottom:2rem; color:white; position:relative; overflow:hidden;">
+        <div style="position:absolute; top:-50px; right:-50px; width:200px; height:200px; background:rgba(0,200,150,0.1); border-radius:50%;"></div>
+        <div style="position:absolute; bottom:-50px; left:-50px; width:150px; height:150px; background:rgba(0,200,255,0.1); border-radius:50%;"></div>
+
+        <div style="position:relative; z-index:1; max-width:800px; margin:0 auto;">
+            <div style="text-align:center; margin-bottom:2rem;">
+                <span style="background:rgba(255,255,255,0.15); padding:0.4rem 1rem; border-radius:999px; font-size:0.8rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; border:1px solid rgba(255,255,255,0.2); margin-bottom:1rem; display:inline-block;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;margin-top:-2px;"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>
+                    New Feature
+                </span>
+                <h2 style="font-size:2.2rem; font-weight:800; margin-bottom:0.75rem;">AI Smart Match</h2>
+                <p style="font-size:1.1rem; opacity:0.9; font-weight:500;">Planning a trip? Let us help you find the perfect vehicle based on your needs.</p>
+            </div>
+
+            <form id="ai-recommend-form" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem; background:rgba(255,255,255,0.05); padding:2rem; border-radius:12px; border:1px solid rgba(255,255,255,0.1); backdrop-filter:blur(10px);">
+                <div class="form-group" style="margin:0;">
+                    <label style="color:rgba(255,255,255,0.8); font-size:0.85rem; margin-bottom:0.4rem;">Passengers</label>
+                    <input type="number" id="ai-passengers" value="2" min="1" max="9" class="form-control" style="background:rgba(255,255,255,0.9); border:none;" required>
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label style="color:rgba(255,255,255,0.8); font-size:0.85rem; margin-bottom:0.4rem;">Daily Budget ($)</label>
+                    <input type="number" id="ai-budget" value="100" min="20" step="10" class="form-control" style="background:rgba(255,255,255,0.9); border:none;" required>
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label style="color:rgba(255,255,255,0.8); font-size:0.85rem; margin-bottom:0.4rem;">Trip Purpose</label>
+                    <select id="ai-purpose" class="form-control" style="background:rgba(255,255,255,0.9); border:none;" required>
+                        <option value="city">City Driving & Commute</option>
+                        <option value="family">Family Road Trip</option>
+                        <option value="luxury">Luxury & Business</option>
+                        <option value="offroad">Mountain & Adventure</option>
+                        <option value="eco">Eco-friendly / Green</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label style="color:rgba(255,255,255,0.8); font-size:0.85rem; margin-bottom:0.4rem;">Days Needed</label>
+                    <input type="number" id="ai-days" value="3" min="1" class="form-control" style="background:rgba(255,255,255,0.9); border:none;" required>
+                </div>
+                <div style="grid-column: 1 / -1; text-align:center; margin-top:0.5rem;">
+                    <button type="submit" id="ai-submit-btn" class="btn btn-primary" style="padding:0.9rem 2.5rem; font-size:1.05rem; background:linear-gradient(90deg, #00c896, #00a8cc); border:none;">
+                        Find My Match
+                    </button>
+                </div>
+            </form>
+
+            <div id="ai-loading" style="display:none; text-align:center; padding:2rem 0;">
+                <div style="display:inline-block; width:40px; height:40px; border:4px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:white; animation:spin 1s ease-in-out infinite;"></div>
+                <div style="margin-top:1rem; font-weight:600; opacity:0.9;">Checking our garage to find the best cars for you...</div>
+            </div>
+
+            <div id="ai-results" style="display:none; margin-top:2rem;">
+                <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:1.5rem; text-align:center; border-top:1px solid rgba(255,255,255,0.2); padding-top:2rem; color:white;">Here are the best vehicles for your trip</h3>
+                <div id="ai-results-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.5rem;">
+                    <!-- Results injected here via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .ai-card {
+            background:white; color:var(--text-primary); border-radius:12px; padding:1.5rem;
+            box-shadow:0 10px 25px rgba(0,0,0,0.2); transition:transform 0.2s;
+        }
+        .ai-card:hover { transform:translateY(-5px); }
+        .ai-match-badge {
+            background:#e6fffa; color:#234e52; font-size:0.75rem; font-weight:800;
+            padding:0.3rem 0.6rem; border-radius:999px; display:inline-block; margin-bottom:1rem;
+        }
+    </style>
+
+    <script>
+        document.getElementById('ai-recommend-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('ai-submit-btn');
+            const loading = document.getElementById('ai-loading');
+            const results = document.getElementById('ai-results');
+            const grid = document.getElementById('ai-results-grid');
+            
+            // UI state
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+            results.style.display = 'none';
+            loading.style.display = 'block';
+            
+            try {
+                // Prepare payload
+                const payload = {
+                    passengers: document.getElementById('ai-passengers').value,
+                    budget: document.getElementById('ai-budget').value,
+                    purpose: document.getElementById('ai-purpose').value,
+                    days: document.getElementById('ai-days').value
+                };
+                
+                // Call API
+                const res = await fetch('{{ url_for("customer.api_recommend_cars") }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await res.json();
+                
+                // Clear old results
+                grid.innerHTML = '';
+                
+                if (data.recommendations && data.recommendations.length > 0) {
+                    data.recommendations.forEach((r, idx) => {
+                        const imgUrl = `/images/${r.image ? r.image.split('/').pop() : 'placeholder.jpg'}`;
+                        const detailUrl = `/car/${r.car_id}`;
+                        
+                        // Generate reasons list
+                        const reasonsHtml = r.reasons.map(reason => 
+                            `<li style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:flex; align-items:start; gap:0.4rem;">
+                                <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3" style="margin-top:3px;"><polyline points="20 6 9 17 4 12"/></svg></span> <span>${reason}</span>
+                            </li>`
+                        ).join('');
+
+                        const iconTrophy = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;margin-top:-2px;"><path d="M8 21h8M12 17v4M7 4h10M5 4h14c1 0 2 1 2 2v2c0 4-3 7-6 7h-6c-3 0-6-3-6-7V6c0-1 1-2 2-2z"/></svg>`;
+                        const iconStar = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;margin-top:-2px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+                        const iconThumbsUp = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;margin-top:-2px;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>`;
+
+                        const matchText = idx === 0 ? `${iconTrophy} Best Match` : (idx === 1 ? `${iconStar} Great Fit` : `${iconThumbsUp} Good Option`);
+                        
+                        grid.innerHTML += `
+                            <div class="car-card" style="text-align:left;">
+                                <div class="car-img-wrapper">
+                                    <div class="car-badge" style="background:var(--primary);">${matchText.replace(/<[^>]*>?/gm, '')}</div>
+                                    <img src="${imgUrl}" alt="Car" class="car-img">
+                                </div>
+                                <div class="car-info">
+                                    <div class="car-title">${r.year} ${r.make} ${r.model}</div>
+                                    <div class="car-subtitle">${r.category}</div>
+                                    
+                                    <div style="font-size:1.5rem; font-weight:800; color:var(--primary); line-height:1; margin:1rem 0;">
+                                        $${r.daily_rate.toFixed(2)}<span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">/day</span>
+                                    </div>
+                                    
+                                    <ul style="list-style:none; padding:0; margin:0 0 1.5rem 0; min-height:80px;">
+                                        ${reasonsHtml}
+                                    </ul>
+                                    
+                                    <a href="${detailUrl}" class="btn btn-primary" style="width:100%; padding:0.75rem; text-align:center; font-size:0.9rem;">View Details &rarr;</a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    grid.innerHTML = `
+                        <div style="grid-column:1/-1; background:rgba(255,255,255,0.1); padding:2rem; border-radius:12px; text-align:center;">
+                            <div style="margin-bottom:1rem; opacity:0.8;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            </div>
+                            <h4 style="font-size:1.1rem; font-weight:700; margin-bottom:0.5rem;">We couldn't find an exact match for those details.</h4>
+                            <p style="font-size:0.9rem; opacity:0.8;">Maybe try tweaking your budget or passenger count to see more options.</p>
+                        </div>
+                    `;
+                }
+                
+                loading.style.display = 'none';
+                results.style.display = 'block';
+                
+            } catch (err) {
+                console.error(err);
+                alert("Something went wrong with the AI Recommendation engine. Please try again.");
+                loading.style.display = 'none';
+            } finally {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        });
+    </script>
+
+
     <div style="text-align:center; margin-bottom: 2rem;">
         <h2 style="font-size:2rem; margin-bottom:0.5rem;">Explore our popular vehicles</h2>
         <a href="{{ url_for('customer.browse_cars') }}" style="font-weight:700;">View all vehicle details &rarr;</a>

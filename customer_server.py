@@ -2,7 +2,7 @@
 Customer server entry point.
 
 Run this file to start the customer-facing web application on port 5000:
-    .venv\Scripts\python customer_server.py
+    .venv\\Scripts\\python customer_server.py
 
 The database tables are created automatically on first run if they don't
 already exist. This makes it easy to start fresh without a separate setup step.

@@ -2,7 +2,7 @@
 Database initialization and seed data script.
 
 Run this to create all database tables and populate them with sample data:
-    .venv\Scripts\python scripts\seed_data.py
+    .venv\\Scripts\\python scripts\\seed_data.py
 
 The script is safe to run multiple times — it checks for existing data
 before inserting, so it won't create duplicates.

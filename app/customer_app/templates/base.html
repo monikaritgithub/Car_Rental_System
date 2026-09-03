@@ -60,11 +60,11 @@
             Smriti Rentals
         </a>
         <div class="nav-links">
-            <a href="{{ url_for('customer.browse_cars') }}">Vehicles</a>
-            <a href="#">Smriti Zero</a>
-            <a href="#">Locations</a>
-            <a href="#">Deals</a>
-            <a href="#">About Us</a>
+            <a href="{{ url_for('customer.browse_cars') }}" {% if request.endpoint == 'customer.browse_cars' %}class="active"{% endif %}>Vehicles</a>
+            <a href="{{ url_for('customer.smriti_zero') }}" {% if request.endpoint == 'customer.smriti_zero' %}class="active"{% endif %}>Smriti Zero</a>
+            <a href="{{ url_for('customer.locations') }}" {% if request.endpoint == 'customer.locations' %}class="active"{% endif %}>Locations</a>
+            <a href="{{ url_for('customer.deals') }}" {% if request.endpoint == 'customer.deals' %}class="active"{% endif %}>Deals</a>
+            <a href="{{ url_for('customer.about') }}" {% if request.endpoint == 'customer.about' %}class="active"{% endif %}>About Us</a>
         </div>
     </nav>
 

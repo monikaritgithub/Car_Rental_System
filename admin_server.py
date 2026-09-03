@@ -2,7 +2,7 @@
 Admin server entry point.
 
 Run this file to start the admin interface on port 5001:
-    .venv\Scripts\python admin_server.py
+    .venv\\Scripts\\python admin_server.py
 
 The customer and admin servers both connect to the same SQLite database
 file (car_rental.db) so they see the same data in real time.

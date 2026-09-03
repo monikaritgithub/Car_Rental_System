@@ -58,6 +58,10 @@ class Car(db.Model):
     # One car can appear in many bookings over time
     bookings = db.relationship("Booking", backref="car", lazy=True)
 
+    # Per-car optional/mandatory extra charges (GPS, insurance, etc.)
+    additional_charges = db.relationship("AdditionalCharge", backref="car", lazy=True, cascade="all, delete-orphan")
+
+
     def update_mileage(self, new_mileage: float) -> None:
         """
         Update the odometer reading.

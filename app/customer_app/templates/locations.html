@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Our Locations — Smriti Rentals{% endblock %}
+
+{% block content %}
+<div style="max-width:1000px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:3rem;">
+        <h1 style="font-size:2.8rem;font-weight:800;margin-bottom:0.75rem;">Our Locations</h1>
+        <p style="font-size:1.1rem;color:var(--text-muted);font-weight:500;">
+            Pick up or drop off at any of our conveniently located branches nationwide.
+        </p>
+    </div>
+
+    <!-- LOCATION CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-bottom:3rem;">
+
+        {% set locations = [
+            {
+                'city': 'Auckland Airport',
+                'address': 'Terminal 1 & 2, Auckland International Airport, Manukau 2022',
+                'phone': '09 974 1598',
+                'hours': 'Open 24 hours',
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L2 8.5l7.5 4-2.5 2.5-3.5-.5-1.5 1.5 3 1.5 1.5 3 1.5-1.5-.5-3.5 2.5-2.5 4 7.5 1.7-1.7c.4-.2.7-.6.6-1.1z"/></svg>',
+                'highlight': True
+            },
+            {
+                'city': 'Auckland CBD',
+                'address': '48 Quay Street, Auckland Central, Auckland 1010',
+                'phone': '09 974 1599',
+                'hours': 'Mon–Fri: 7am–8pm | Sat–Sun: 8am–6pm',
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm10-18v16m-4-12h.01m3-.01h.01m-3 4h.01m3-.01h.01m-3 4h.01m3-.01h.01"/></svg>',
+                'highlight': False
+            },
+            {
+                'city': 'Wellington',
+                'address': 'Wellington Airport, Stewart Duff Drive, Rongotai, Wellington 6022',
+                'phone': '04 385 7420',
+                'hours': 'Open 24 hours',
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M22 12h.01M4 16h16M4 8h16"/></svg>',
+                'highlight': False
+            },
+            {
+                'city': 'Christchurch',
+                'address': 'Christchurch Airport, Terminal Building, Christchurch 8053',
+                'phone': '03 358 7220',
+                'hours': 'Open 24 hours',
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 8 5-5 5 15H2L8 3z"/></svg>',
+                'highlight': False
+            },
+            {
+                'city': 'Hamilton',
+                'address': '72 Anglesea Street, Hamilton Central, Hamilton 3204',
+                'phone': '07 839 1122',
+                'hours': 'Mon–Sun: 8am–6pm',
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 014 13a7 7 0 0114 0v7h-7z"/></svg>',
+                'highlight': False
+            },
+            {
+                'city': 'Queenstown',
+                'address': 'Queenstown Airport, Sir Henry Wigley Drive, Frankton, Queenstown 9300',
+                'phone': '03 441 7300',
+                'hours': 'Open 24 hours',
+                'icon': '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12l-6-6-6 6M16 6v16"/></svg>',
+                'highlight': False
+            }
+        ] %}
+
+        {% for loc in locations %}
+        <div style="
+            background:white;
+            border-radius:12px;
+            padding:2rem;
+            box-shadow:var(--shadow-md);
+            border-top: 4px solid {{ 'var(--primary)' if loc.highlight else 'var(--border-light)' }};
+            transition:transform 0.2s,box-shadow 0.2s;
+            position:relative;
+        " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='var(--shadow-hover)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-md)'">
+
+            {% if loc.highlight %}
+            <div style="
+                position:absolute;top:1rem;right:1rem;
+                background:var(--primary);color:white;
+                font-size:0.65rem;font-weight:700;
+                padding:0.25rem 0.6rem;border-radius:999px;
+                letter-spacing:0.05em;
+            ">MAIN BRANCH</div>
+            {% endif %}
+
+            <div style="font-size:2rem;margin-bottom:0.75rem;">{{ loc.icon | safe }}</div>
+            <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:0.75rem;color:var(--secondary);">{{ loc.city }}</h3>
+
+            <div style="font-size:0.88rem;color:var(--text-secondary);font-weight:500;line-height:1.6;margin-bottom:1rem;">
+                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> {{ loc.address }}
+            </div>
+            <div style="font-size:0.88rem;color:var(--text-muted);font-weight:600;margin-bottom:0.4rem;">
+                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg> {{ loc.phone }}
+            </div>
+            <div style="font-size:0.82rem;color:var(--success);font-weight:700;">
+                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> {{ loc.hours }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- RETURN POLICY NOTE -->
+    <div style="
+        background:linear-gradient(135deg,#fff5f7,#ffe4ed);
+        border:1px solid #feb2c8;
+        border-radius:12px;
+        padding:2rem 2.5rem;
+        text-align:center;
+        margin-bottom:2rem;
+    ">
+        <h3 style="font-size:1.2rem;margin-bottom:0.75rem;color:var(--primary);"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6M3 12a9 9 0 0115-6.7L21 8M3 22v-6h6M21 12a9 9 0 01-15 6.7L3 16"/></svg> One-Way Rentals Available</h3>
+        <p style="color:var(--text-secondary);font-weight:500;font-size:0.95rem;line-height:1.7;">
+            Pick up at one branch and drop off at another. One-way fees may apply depending on the route.
+            Contact us at <strong>09 974 1598</strong> for availability and pricing.
+        </p>
+    </div>
+
+    <div style="text-align:center;">
+        <a href="{{ url_for('customer.browse_cars') }}" class="btn btn-primary" style="font-size:1rem;padding:0.9rem 3rem;">
+            Book a Car Now →
+        </a>
+    </div>
+</div>
+{% endblock %}
